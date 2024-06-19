@@ -20,6 +20,7 @@ interface Shortcut {
 }
 
 export interface AppConfig {
+  id: number;
   title: string;
   refreshInterval: number;
   newOnTop: boolean;
@@ -57,7 +58,7 @@ export interface FeedItem {
   link?: string;
   url?: string;
   image?: string;
-  [other: string]: any;
+  [key: string]: any;
 }
 
 export interface Channel {

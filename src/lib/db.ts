@@ -13,11 +13,11 @@ const db = new Dexie("FeederDatabase") as Dexie & {
 };
 
 // Schema declaration:
-db.version(1).stores({
-  config: "title, refreshInterval, newOnTop, hideRead, hideEmptyCategories, hideEmptyFeeds, enableShortcuts, shortcuts",
-  categories: "id, text, title", // primary key "id" (for the runtime!)
-  feeds: "id, type, text, title, xmlUrl, htmlUrl, categories, lastUpdated", // primary key "id" (for the runtime!)
-  feedItems: "id, title, pubDate, isRead, description, link, url, image, feed", // primary key "id" (for the runtime!)
+db.version(2).stores({
+  config: "++id",
+  categories: "id", // primary key "id" (for the runtime!)
+  feeds: "id, *categories, lastUpdated", // primary key "id" (for the runtime!)
+  feedItems: "id, title, pubDate, isRead, feed", // primary key "id" (for the runtime!)
 });
 
 export async function setup() {
@@ -37,6 +37,7 @@ export async function setup() {
   if (!existingConfig.length) {
     const appConfig = {
       ...config,
+      id: 1,
       shortcuts: config.shortcuts.map(shortcut => ({
         altKey: false,
         ctrlKey: false,
@@ -49,5 +50,15 @@ export async function setup() {
     db.config.put(appConfig);
   }
 }
+
+export async function getFeeds() {
+  if (!db) {
+    console.log("db not found");
+    return;
+  }
+
+  return db.feeds.toArray();
+}
+
 export type { Category, Feed, FeedItem };
 export { db };

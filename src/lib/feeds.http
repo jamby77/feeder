@@ -1,0 +1,2 @@
+### GET request to example server
+GET http://localhost:3000/api/feed?url=http%3A%2F%2Fakrabat.com%2Ffeed%2F
