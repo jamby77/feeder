@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.1">
+  <head>
+    <title>Feedreader Online Subscriptions</title>
+  </head>
+  <body>
+
+    <outline type="rss" title="Форум на приятелите на Apple" text="Форум на приятелите на Apple" htmlUrl="https://www.apple-bg.com/index.php?PHPSESSID=jf94qqd4lgfbrg2cuh6fm1c8m4&amp;type=rss;action=.xml;sslRedirect" xmlUrl="https://www.apple-bg.com/index.php?PHPSESSID=jf94qqd4lgfbrg2cuh6fm1c8m4&amp;type=rss;action=.xml;sslRedirect"/>
+    <outline title="news" text="news">
+      <outline type="rss" title="Engadget is a web magazine with obsessive daily coverage of everything new in gadgets and consumer electronics" text="Engadget is a web magazine with obsessive daily coverage of everything new in gadgets and consumer electronics" htmlUrl="https://www.engadget.com/rss.xml" xmlUrl="https://www.engadget.com/rss.xml"/>
+      <outline type="rss" title="Moreto.net-Варна - новини" text="Moreto.net-Варна - новини" htmlUrl="https://www.moreto.net/rss/lastnews.xml" xmlUrl="https://www.moreto.net/rss/lastnews.xml"/>
+      <outline type="rss" title="Vercel News" text="Vercel News" htmlUrl="https://vercel.com/atom" xmlUrl="https://vercel.com/atom"/>
+    </outline>
+    <outline title="dev" text="dev">
+      <outline type="rss" title="PHPDeveloper.org" text="PHPDeveloper.org" htmlUrl="http://www.phpdeveloper.org/feed" xmlUrl="http://www.phpdeveloper.org/feed"/>
+      <outline type="rss" title="Rob Allen" text="Rob Allen" htmlUrl="https://akrabat.com/feed/" xmlUrl="https://akrabat.com/feed/"/>
+      <outline type="rss" title="The PhpStorm Blog : The Lightning-Smart IDE for PHP Programming | The JetBrains Blog" text="The PhpStorm Blog : The Lightning-Smart IDE for PHP Programming | The JetBrains Blog" htmlUrl="https://blog.jetbrains.com/phpstorm/feed/" xmlUrl="https://blog.jetbrains.com/phpstorm/feed/"/>
+      <outline type="rss" title="The IntelliJ IDEA Blog : The Capable &amp;#38; Ergonomic Java IDE by JetBrains | JetBrains Blog" text="The IntelliJ IDEA Blog : The Capable &amp;#38; Ergonomic Java IDE by JetBrains | JetBrains Blog" htmlUrl="http://feeds.feedburner.com/jetbrains_intellijidea" xmlUrl="http://feeds.feedburner.com/jetbrains_intellijidea"/>
+      <outline type="rss" title="The WebStorm Blog : The JavaScript and TypeScript IDE | The JetBrains Blog" text="The WebStorm Blog : The JavaScript and TypeScript IDE | The JetBrains Blog" htmlUrl="https://blog.jetbrains.com/webstorm/feed/" xmlUrl="https://blog.jetbrains.com/webstorm/feed/"/>
+      <outline type="rss" title="React" text="React" htmlUrl="https://reactjs.org/feed.xml" xmlUrl="https://reactjs.org/feed.xml"/>
+      <outline type="rss" title="The GoLand Blog : A cross-platform Go IDE with extended support for JavaScript, TypeScript, and databases | The JetBrains Blog" text="The GoLand Blog : A cross-platform Go IDE with extended support for JavaScript, TypeScript, and databases | The JetBrains Blog" htmlUrl="https://blog.jetbrains.com/go/feed/" xmlUrl="https://blog.jetbrains.com/go/feed/"/>
+    </outline>
+
+  </body>
+</opml>
