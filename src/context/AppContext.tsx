@@ -8,22 +8,24 @@ import { AppConfig, Category, Feed, FeedItem } from "@/types";
 type AppContextValueType = {
   selectedItem: FeedItem | undefined;
   setSelectedItem: (item: FeedItem | undefined) => void;
-  feedUrl: string | undefined;
-  setFeedUrl: (url: string | undefined) => void;
+  feed: Feed | undefined;
+  setFeed: (feed: Feed | undefined) => void;
   feeds: Feed[] | undefined;
   config: AppConfig | undefined;
   categories: Category[] | undefined;
   feedItems: FeedItem[] | undefined;
+  countAll: number | undefined;
 };
 const defaultValue: AppContextValueType = {
   selectedItem: undefined,
   setSelectedItem: (item: FeedItem | undefined) => {},
-  feedUrl: undefined,
-  setFeedUrl: (url: string | undefined) => {},
+  feed: undefined,
+  setFeed: (feed: Feed | undefined) => {},
   feeds: undefined,
   config: undefined,
   categories: undefined,
   feedItems: undefined,
+  countAll: undefined,
 };
 
 const AppContext = createContext<AppContextValueType>(defaultValue);
@@ -67,19 +69,41 @@ async function fetchFeeds(feeds: Feed[], refreshInterval: number = 10) {
   }
   return json;
 }
-
+async function getFeeds() {
+  const feeds = await db.feeds.toArray();
+  // Attach resolved properties "feed items" to each feed
+  // using parallel queries:
+  await Promise.all(
+    feeds.map(async feed => {
+      const feedItems = await db.feedItems
+        .where("feedId")
+        .equals(feed.id)
+        .filter(item => !item.isRead)
+        .toArray();
+      feed.items = feedItems;
+    }),
+  );
+  return feeds;
+}
 export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   // currently viewed item
   const [selectedItem, setSelectedItem] = useState<FeedItem | undefined>(undefined);
-  // current feedUrl
-  const [feedUrl, setFeedUrl] = useState<string | undefined>(undefined);
+  // current feed
+  const [feed, setFeed] = useState<Feed | undefined>(undefined);
   // all feeds
-  const feeds = useLiveQuery(() => db.feeds.toArray());
+  const feeds = useLiveQuery(getFeeds);
   const configArray = useLiveQuery(() => db.config.toArray());
   const config = configArray && configArray.length > 0 ? configArray[0] : undefined;
   // all feed categories
   const categories = useLiveQuery(() => db.categories.toArray());
+
+  // count all unread feed items
+  const countAll = useLiveQuery(() => {
+    return db.feedItems.filter(item => !item.isRead).count();
+  });
+
   const hideRead = config?.hideRead;
+  const feedUrl = feed?.xmlUrl;
   // current feed items
   const feedItems = useLiveQuery(() => {
     const collection = db.feedItems;
@@ -117,11 +141,24 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [escapeListener]);
 
+  const refreshInterval = config?.refreshInterval;
+  let intervalID: any = 0;
   useEffect(() => {
-    if (feeds && config) {
-      // fetchFeeds(feeds, config[0]);
-    }
-  }, [feeds, config]);
+    const now = new Date();
+    console.log({ refreshInterval, now });
+    intervalID = setInterval(
+      () => {
+        if (!feeds) {
+          return;
+        }
+        const diff = (now.getTime() - new Date().getTime()) / 1000;
+        console.log({ refreshInterval, diff });
+        fetchFeeds(feeds, refreshInterval);
+      },
+      (refreshInterval || 10) * 1000,
+    );
+    return () => clearInterval(intervalID);
+  }, [feeds, refreshInterval]);
 
   const value: AppContextValueType = {
     selectedItem,
@@ -130,8 +167,9 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     categories,
     feedItems,
     setSelectedItem,
-    setFeedUrl,
-    feedUrl,
+    setFeed,
+    feed,
+    countAll,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

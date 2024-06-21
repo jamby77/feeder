@@ -1,7 +1,9 @@
+import FeedsItemsList from "@/app/feeds/feeds-items-list";
+
 const HomePage = () => {
   return (
     <main>
-      <h1 className="text-6xl">Home page</h1>
+      <FeedsItemsList />
     </main>
   );
 };

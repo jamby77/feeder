@@ -1,14 +1,17 @@
 "use client";
 
-import Link from "next/link";
 import { useAppContext } from "@/context/AppContext";
 import { Category } from "@/lib/db";
 
 export const Sidebar = ({}) => {
-  const { categories, feeds } = useAppContext();
+  const { categories, feeds, setFeed, countAll } = useAppContext();
   return (
     <aside className="w-full max-w-96">
       <div className="space-y-2">
+        <h2 className="cursor-pointer p-3 text-xl" onClick={() => setFeed(undefined)}>
+          All {countAll ? `(${countAll})` : ""}
+        </h2>
+
         {categories &&
           categories?.map((category: Category) => (
             <div key={category.id} className="p-3">
@@ -18,7 +21,17 @@ export const Sidebar = ({}) => {
                   ?.filter(feed => feed.categories && feed.categories.includes(category.id))
                   .map(feed => (
                     <li key={feed.id} className="ps-4">
-                      <Link href={`/feeds?feed=${feed.id}&title=${feed.title}`}>{feed.title}</Link>
+                      <a
+                        href={`/feeds?feed=${feed.id}&title=${feed.title}`}
+                        onClick={e => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setFeed(feed);
+                        }}
+                      >
+                        {feed.title}
+                        {feed.items?.length ? ` (${feed.items.length})` : ""}
+                      </a>
                     </li>
                   ))}
               </ul>

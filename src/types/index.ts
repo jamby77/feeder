@@ -46,6 +46,7 @@ export interface Feed {
   text?: string;
   categories?: string[];
   lastUpdated?: Date;
+  items?: FeedItem[];
 }
 
 export interface FeedItem {

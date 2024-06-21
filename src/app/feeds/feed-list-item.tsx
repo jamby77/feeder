@@ -21,7 +21,7 @@ export const FeedListItem = ({
     <li
       onClick={handleSelect}
       onFocus={handleSelect}
-      className={`w-full max-w-96 rounded border p-1 md:max-w-xl md:px-4 md:py-2 ${!item.isRead ? "" : "bg-gray-100 opacity-50"}`}
+      className={`w-full max-w-96 cursor-pointer rounded border p-1 md:max-w-xl md:px-4 md:py-2 ${!item.isRead ? "" : "bg-gray-100 opacity-50"}`}
     >
       <div className="flex flex-nowrap items-start justify-between gap-2">
         <a href={item.link} target="_blank" className="text-lg uppercase hover:underline">

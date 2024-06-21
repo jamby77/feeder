@@ -1,18 +1,14 @@
 "use client";
 
-import { useEffect } from "react";
 import { FeedDisplayItem } from "@/app/feeds/feed-display-item";
 import { FeedListItem } from "@/app/feeds/feed-list-item";
 import { useAppContext } from "@/context/AppContext";
 
-export const FeedsItemsList = ({ feedUrl }: { feedUrl?: string }) => {
-  const { feedItems, selectedItem, setSelectedItem, setFeedUrl } = useAppContext();
-  useEffect(() => {
-    setFeedUrl(feedUrl);
-  }, [feedUrl, setFeedUrl]);
+export const FeedsItemsList = () => {
+  const { feedItems, selectedItem, setSelectedItem } = useAppContext();
   return (
     <div className="flex md:gap-4">
-      <ul className="flex w-full flex-col space-y-2 md:block">
+      <ul className="flex w-full flex-col space-y-2 p-2 md:block md:p-6">
         {feedItems?.map(item => {
           return <FeedListItem item={item} key={item.id} onSelect={setSelectedItem} />;
         })}
