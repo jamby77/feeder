@@ -7,7 +7,7 @@ export const FeedListItem = ({
   onSelect,
 }: {
   item: FeedItem;
-  onSelect?: (value: ((prevState: FeedItem | undefined) => FeedItem | undefined) | FeedItem | undefined) => void;
+  onSelect?: (item: FeedItem | undefined) => void;
 }) => {
   let content = DOMPurify.sanitize(item.description || "", { FORBID_TAGS: ["iframe"] });
   if (content.length > 300) {

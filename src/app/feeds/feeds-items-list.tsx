@@ -1,49 +1,15 @@
 "use client";
 
-import { useLiveQuery } from "dexie-react-hooks";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { FeedDisplayItem } from "@/app/feeds/feed-display-item";
 import { FeedListItem } from "@/app/feeds/feed-list-item";
-import { db, FeedItem } from "@/lib/db";
+import { useAppContext } from "@/context/AppContext";
 
 export const FeedsItemsList = ({ feedUrl }: { feedUrl?: string }) => {
-  const config = useLiveQuery(() => db.config.toArray());
-  const [selectedItem, setSelectedItem] = useState<FeedItem | undefined>(undefined);
-  const feedItems = useLiveQuery(() => {
-    const collection = db.feedItems;
-    const hideRead = !!config?.[0]?.hideRead;
-    function filterReadOut(item: FeedItem) {
-      if (!hideRead) {
-        return true;
-      }
-      return !item.isRead;
-    }
-    if (feedUrl) {
-      return collection.where("feedId").equals(feedUrl).and(filterReadOut).toArray();
-    } else {
-      return collection.filter(filterReadOut).toArray();
-    }
-  }, [feedUrl, config]);
-
-  const escapeListener = useCallback(
-    function (e: KeyboardEvent) {
-      if (e.key === "Escape" && selectedItem) {
-        setSelectedItem(undefined);
-      }
-    },
-    [selectedItem],
-  );
-
+  const { feedItems, selectedItem, setSelectedItem, setFeedUrl } = useAppContext();
   useEffect(() => {
-    if (document) {
-      document.addEventListener("keyup", escapeListener);
-    }
-    return () => {
-      if (document) {
-        document.removeEventListener("keyup", escapeListener);
-      }
-    };
-  }, [escapeListener]);
+    setFeedUrl(feedUrl);
+  }, [feedUrl, setFeedUrl]);
   return (
     <div className="flex md:gap-4">
       <ul className="flex w-full flex-col space-y-2 md:block">

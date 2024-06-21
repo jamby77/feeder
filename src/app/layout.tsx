@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ReactNode } from "react";
 import Sidebar from "@/app/sidebar";
+import { AppContextProvider } from "@/context/AppContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,8 +21,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <div className="relative flex gap-2">
-          <Sidebar />
-          {children}
+          <AppContextProvider>
+            <Sidebar />
+            {children}
+          </AppContextProvider>
         </div>
       </body>
     </html>

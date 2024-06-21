@@ -1,12 +1,11 @@
 "use client";
 
-import { useLiveQuery } from "dexie-react-hooks";
 import Link from "next/link";
-import { Category, db } from "@/lib/db";
+import { useAppContext } from "@/context/AppContext";
+import { Category } from "@/lib/db";
 
 export const Sidebar = ({}) => {
-  const feeds = useLiveQuery(async () => db.feeds.toArray());
-  const categories = useLiveQuery(() => db.categories.toArray());
+  const { categories, feeds } = useAppContext();
   return (
     <aside className="w-full max-w-96">
       <div className="space-y-2">
