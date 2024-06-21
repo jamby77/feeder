@@ -8,7 +8,7 @@ export const FeedsItemsList = () => {
   const { feedItems, selectedItem, setSelectedItem } = useAppContext();
   return (
     <div className="flex md:gap-4">
-      <ul className="flex w-full flex-col space-y-2 p-2 md:block md:p-6">
+      <ul className="max-h-screen-top flex w-full flex-col space-y-2 overflow-y-auto p-2 md:block md:p-6">
         {feedItems?.map(item => {
           return <FeedListItem item={item} key={item.id} onSelect={setSelectedItem} />;
         })}

@@ -21,9 +21,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="relative flex gap-2 pt-24">
+        <div className="pt-topBar relative flex gap-2">
           <AppContextProvider>
-            <div className="fixed left-0 right-0 top-0 bg-white/25 py-2 shadow-md backdrop-blur">
+            <div className="h-topBar fixed left-0 right-0 top-0 bg-white/25 py-2 shadow-md backdrop-blur">
               <FeedTitle />
             </div>
             <Sidebar />

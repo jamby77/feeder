@@ -7,7 +7,14 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      spacing: {
+        topBar: "var(--top-bar-height)",
+      },
+      maxHeight: {
+        "screen-top": "calc(100vh - var(--top-bar-height))",
+      },
+    },
   },
   plugins: [require("@tailwindcss/typography")],
 };

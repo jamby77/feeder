@@ -13,9 +13,12 @@ function getItemUrl(item: Record<string, any>) {
 function getFeedImage(item: Record<string, any>) {
   let image = item.image || "";
   if (!image) {
-    const imageUrl = item.imageUrl || "";
-    if (imageUrl) {
-      image = imageUrl;
+    if (item.imageUrl) {
+      image = item.imageUrl;
+    }
+
+    if (item.featuredImage) {
+      image = item.featuredImage;
     }
   }
   return image;
