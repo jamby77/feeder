@@ -3,7 +3,7 @@ import { AppConfig, Category, Command, Feed, FeedItem } from "@/types";
 import data from "../mockData/data.json";
 
 const db = new Dexie("FeederDatabase") as Dexie & {
-  config: EntityTable<AppConfig>;
+  config: EntityTable<AppConfig, "id">;
   categories: EntityTable<
     Category,
     "id" // primary key "id" (for the typings only)
@@ -17,7 +17,7 @@ db.version(2).stores({
   config: "++id",
   categories: "id", // primary key "id" (for the runtime!)
   feeds: "id, *categories, lastUpdated", // primary key "id" (for the runtime!)
-  feedItems: "id, title, pubDate, isRead, feed", // primary key "id" (for the runtime!)
+  feedItems: "id, title, pubDate, isRead, feedId", // primary key "id" (for the runtime!)
 });
 
 export async function setup() {
@@ -59,6 +59,11 @@ export async function getFeeds() {
 
   return db.feeds.toArray();
 }
-
+export function markRead(item: FeedItem) {
+  db.feedItems.update(item.id, { isRead: true });
+}
+export function markUnread(item: FeedItem) {
+  db.feedItems.update(item.id, { isRead: false });
+}
 export type { Category, Feed, FeedItem };
 export { db };

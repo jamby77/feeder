@@ -1,14 +1,13 @@
 "use client";
 
 import { useLiveQuery } from "dexie-react-hooks";
-import { useEffect, useState } from "react";
-import { Category, db, Feed, FeedItem, setup } from "@/lib/db";
+import { useEffect } from "react";
+import { db, Feed, FeedItem } from "@/lib/db";
 import { AppConfig } from "@/types";
 
 const HomePage = () => {
   const feeds = useLiveQuery(() => db.feeds.toArray());
   const config = useLiveQuery(() => db.config.toArray());
-  const categories = useLiveQuery(() => db.categories.toArray());
 
   async function fetchFeeds(feeds: Feed[], config: AppConfig) {
     if (!feeds || !config) {
@@ -62,23 +61,6 @@ const HomePage = () => {
   return (
     <main>
       <h1 className="text-6xl">Home page</h1>
-      <div className="space-y-2">
-        {categories &&
-          categories?.map((category: Category) => (
-            <div key={category.id}>
-              <h2 className="text-xl">{category.title}</h2>
-              <ul className="space-y-1 pt-2">
-                {feeds
-                  ?.filter(feed => feed.categories && feed.categories.includes(category.id))
-                  .map(feed => (
-                    <li key={feed.id} className="ps-4">
-                      <a href={feed.htmlUrl}>{feed.title}</a>
-                    </li>
-                  ))}
-              </ul>
-            </div>
-          ))}
-      </div>
     </main>
   );
 };

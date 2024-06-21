@@ -1,19 +1,19 @@
 import { XMLParser } from "fast-xml-parser";
 import { FeedItem } from "@/types";
 
-function getItemUrl(item: Element) {
-  const link = item.querySelector("link")?.textContent || "";
-  const url = item.querySelector("url")?.textContent || "";
+function getItemUrl(item: Record<string, any>) {
+  const link = item.link || "";
+  const url = item.url || "";
   if (!link && url) {
     return url;
   }
   return link;
 }
 
-function getFeedImage(item: Element) {
-  let image = item.querySelector("image")?.textContent || "";
+function getFeedImage(item: Record<string, any>) {
+  let image = item.image || "";
   if (!image) {
-    const imageUrl = item.querySelector("imageUrl")?.textContent || "";
+    const imageUrl = item.imageUrl || "";
     if (imageUrl) {
       image = imageUrl;
     }
@@ -33,24 +33,24 @@ function parseFeedXml(xml: string) {
   return parser.parse(xml);
 }
 
+function getFeedItemDate(item: Record<string, any>) {
+  const pubDateStr = item.pubContent || "";
+  return pubDateStr.trim().length > 0 ? new Date(pubDateStr) : new Date();
+}
+
 function buildFeedItem(feedId: string, item: Record<string, any>): FeedItem {
   const title = item.title || "";
   const description = item.description || "";
-  const pubDateStr = item.pubContent || "";
-  const image = item.image || "";
+  const image = getFeedImage(item);
 
-  let link = item.link || "";
-  const url = item.url || "";
-  if (!link && url) {
-    link = url;
-  }
-  const publishDate = pubDateStr.trim().length > 0 ? new Date(pubDateStr) : new Date();
+  let link = getItemUrl(item);
+  const pubDate = getFeedItemDate(item);
   const feedItem = {
     id: link,
     feedId: feedId,
     title,
     description,
-    pubDate: publishDate,
+    pubDate,
     link,
     image,
     isRead: false,
