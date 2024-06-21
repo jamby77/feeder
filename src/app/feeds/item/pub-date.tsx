@@ -16,7 +16,6 @@ export const PubDate = ({ item }: { item: FeedItem }) => {
     return null;
   }
   const date = new Date(item.pubDate);
-  console.log({ item }, typeof item.pubDate);
   const dateStr = dateFormatter.format(date);
   return <div className="text-sm">on {dateStr}</div>;
 };

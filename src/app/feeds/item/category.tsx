@@ -8,7 +8,6 @@ export const Category = ({ item }: { item: FeedItem }) => {
   if (Array.isArray(category)) {
     category = category.join(", ");
   }
-  console.log({ category });
   return (
     <div className="w-full max-w-96 truncate text-sm" title={category}>
       in {category}

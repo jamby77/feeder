@@ -1,4 +1,4 @@
-import { XMLParser } from "fast-xml-parser";
+import { X2jOptions, XMLParser } from "fast-xml-parser";
 import { FeedItem } from "@/types";
 
 function getItemUrl(item: Record<string, any>) {
@@ -31,8 +31,16 @@ async function fetchFeedContent(url: string) {
   }
   return response.text();
 }
+
 function parseFeedXml(xml: string) {
-  const parser = new XMLParser();
+  const parserOptions: X2jOptions = {
+    ignoreAttributes: false,
+    allowBooleanAttributes: true,
+    attributesGroupName: "__attributes",
+    parseAttributeValues: true,
+    parseTagValues: true,
+  };
+  const parser = new XMLParser(parserOptions);
   return parser.parse(xml);
 }
 

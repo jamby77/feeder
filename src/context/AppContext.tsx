@@ -15,6 +15,9 @@ type AppContextValueType = {
   categories: Category[] | undefined;
   feedItems: FeedItem[] | undefined;
   countAll: number | undefined;
+  nextItem: () => void;
+  prevItem: () => void;
+  refreshFeeds: () => void;
 };
 const defaultValue: AppContextValueType = {
   selectedItem: undefined,
@@ -26,6 +29,9 @@ const defaultValue: AppContextValueType = {
   categories: undefined,
   feedItems: undefined,
   countAll: undefined,
+  nextItem: () => {},
+  prevItem: () => {},
+  refreshFeeds: () => {},
 };
 
 const AppContext = createContext<AppContextValueType>(defaultValue);
@@ -102,8 +108,9 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     return db.feedItems.filter(item => !item.isRead).count();
   });
 
-  const hideRead = config?.hideRead;
+  const hideRead = false; //config?.hideRead;
   const feedUrl = feed?.xmlUrl;
+
   // current feed items
   const feedItems = useLiveQuery(() => {
     const collection = db.feedItems;
@@ -119,6 +126,34 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
       return collection.filter(filterReadOut).toArray();
     }
   }, [feedUrl, hideRead]);
+
+  // set next rss item in the feed as selected item
+  const nextItem = () => {
+    if (!feedItems) {
+      return;
+    }
+    let index = 0;
+    if (selectedItem) {
+      index = feedItems.findIndex(item => item.id === selectedItem.id);
+    }
+    if (index >= 0 && index < feedItems.length - 1) {
+      setSelectedItem(feedItems[index + 1]);
+    }
+  };
+
+  // set previous rss item in the feed as selected item
+  const prevItem = () => {
+    if (!feedItems) {
+      return;
+    }
+    let index = 0;
+    if (selectedItem) {
+      index = feedItems.findIndex(item => item.id === selectedItem.id);
+    }
+    if (index > 0) {
+      setSelectedItem(feedItems[index - 1]);
+    }
+  };
 
   // TODO: implement all shortcuts
   const escapeListener = useCallback(
@@ -142,18 +177,21 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   }, [escapeListener]);
 
   const refreshInterval = config?.refreshInterval;
+  const refreshFeeds = () => {
+    if (!feeds) {
+      return;
+    }
+    return fetchFeeds(feeds, refreshInterval);
+  };
+
   let intervalID: any = 0;
   useEffect(() => {
-    const now = new Date();
-    console.log({ refreshInterval, now });
     intervalID = setInterval(
       () => {
         if (!feeds) {
           return;
         }
-        const diff = (now.getTime() - new Date().getTime()) / 1000;
-        console.log({ refreshInterval, diff });
-        fetchFeeds(feeds, refreshInterval);
+        return fetchFeeds(feeds, refreshInterval);
       },
       (refreshInterval || 10) * 1000,
     );
@@ -170,6 +208,9 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     setFeed,
     feed,
     countAll,
+    nextItem,
+    prevItem,
+    refreshFeeds,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
