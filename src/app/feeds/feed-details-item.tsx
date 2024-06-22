@@ -1,13 +1,24 @@
+import { useEffect } from "react";
 import DOMPurify from "dompurify";
 import Author from "@/app/feeds/item/author";
 import Category from "@/app/feeds/item/category";
 import Image from "@/app/feeds/item/image";
 import PubDate from "@/app/feeds/item/pub-date";
 import { useAppContext } from "@/context/AppContext";
-import { FeedItem } from "@/lib/db";
+import { FeedItem, markRead } from "@/lib/db";
 
-export const FeedDisplayItem = ({ item }: { item: FeedItem }) => {
+export const FeedDetailsItem = ({
+  item,
+  toggleRead,
+}: {
+  item: FeedItem;
+  toggleRead: (item: FeedItem | undefined) => void;
+}) => {
   const content = DOMPurify.sanitize(item.description || "", { FORBID_TAGS: ["iframe"] });
+  useEffect(() => {
+    markRead(item);
+    toggleRead(item); // will it work?
+  }, [item]);
   const { nextItem, prevItem } = useAppContext();
   return (
     <div className="absolute bottom-0 left-8 right-0 top-0 place-content-center overflow-hidden overflow-y-auto rounded-l-2xl border-l-2 bg-white drop-shadow-2xl md:left-48">
@@ -39,7 +50,6 @@ export const FeedDisplayItem = ({ item }: { item: FeedItem }) => {
       <button
         type="button"
         onClick={() => {
-          debugger;
           nextItem();
         }}
       >

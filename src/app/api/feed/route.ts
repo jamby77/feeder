@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getFeedItems } from "@/lib/feeds";
 
-export async function GET(request: NextRequest) {
-  const params = request.nextUrl.searchParams;
-  const urls = params.getAll("url");
+export async function POST(request: NextRequest) {
+  const params = await request.json();
+  const urls = params["url"] as string[];
   const feedPromises = [];
   for (const feed of urls) {
     feedPromises.push(getFeedItems(feed));

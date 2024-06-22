@@ -1,2 +1,9 @@
-### GET request to example server
-GET http://localhost:3000/api/feed?url=http%3A%2F%2Fakrabat.com%2Ffeed%2F
+### POST request to example server
+POST {{host}}/api/feed
+Content-Type: application/json
+
+{
+    "url": [
+      "https://stolica.bg/rss.xml"
+    ]
+}

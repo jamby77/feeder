@@ -40,7 +40,8 @@ async function fetchFeeds(feeds: Feed[], refreshInterval: number = 10) {
     console.warn("no feeds found");
     return;
   }
-  const feedUrls = new URLSearchParams();
+  // pass all feed urls to backend
+  const feedUrls = [];
   const now = new Date();
   for (const feed of feeds) {
     const lastUpdated = feed.lastUpdated;
@@ -48,10 +49,16 @@ async function fetchFeeds(feeds: Feed[], refreshInterval: number = 10) {
       // skip fetching
       continue;
     }
-    feedUrls.append("urls[]", feed.xmlUrl);
-    feedUrls.append("url", feed.xmlUrl);
+    feedUrls.push(feed.xmlUrl);
   }
-  const response = await fetch(`/api/feed?${feedUrls.toString()}`);
+  // fetch all feeds from backend, because of CORS issues
+  const response = await fetch(`/api/feed`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ url: feedUrls }),
+  });
   if (!response.ok) {
     throw new Error(`Failed to fetch feeds: ${response.status}`);
   }
@@ -81,12 +88,11 @@ async function getFeeds() {
   // using parallel queries:
   await Promise.all(
     feeds.map(async feed => {
-      const feedItems = await db.feedItems
+      feed.items = await db.feedItems
         .where("feedId")
         .equals(feed.id)
         .filter(item => !item.isRead)
         .toArray();
-      feed.items = feedItems;
     }),
   );
   return feeds;
@@ -94,8 +100,20 @@ async function getFeeds() {
 export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   // currently viewed item
   const [selectedItem, setSelectedItem] = useState<FeedItem | undefined>(undefined);
+  const [sessionItems, setSessionItems] = useState<FeedItem[] | undefined>(undefined);
   // current feed
   const [feed, setFeed] = useState<Feed | undefined>(undefined);
+
+  const setFeedCallback = useCallback(
+    (newFeed: Feed | undefined) => {
+      if (newFeed?.id !== feed?.id) {
+        // clear session items when feed changes
+        setSessionItems(undefined);
+      }
+      setFeed(newFeed);
+    },
+    [feed],
+  );
   // all feeds
   const feeds = useLiveQuery(getFeeds);
   const configArray = useLiveQuery(() => db.config.toArray());
@@ -108,10 +126,10 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     return db.feedItems.filter(item => !item.isRead).count();
   });
 
-  const hideRead = false; //config?.hideRead;
+  const hideRead = config?.hideRead;
   const feedUrl = feed?.xmlUrl;
 
-  // current feed items
+  // all current feed items
   const feedItems = useLiveQuery(() => {
     const collection = db.feedItems;
     function filterReadOut(item: FeedItem) {
@@ -128,32 +146,44 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   }, [feedUrl, hideRead]);
 
   // set next rss item in the feed as selected item
-  const nextItem = () => {
-    if (!feedItems) {
+  const nextItem = useCallback(() => {
+    if (!sessionItems) {
       return;
     }
     let index = 0;
     if (selectedItem) {
-      index = feedItems.findIndex(item => item.id === selectedItem.id);
+      index = sessionItems.findIndex(item => item.id === selectedItem.id);
     }
-    if (index >= 0 && index < feedItems.length - 1) {
-      setSelectedItem(feedItems[index + 1]);
+    if (index >= 0 && index < sessionItems.length - 1) {
+      setSelectedItem(sessionItems[index + 1]);
     }
-  };
+  }, [sessionItems, selectedItem]);
 
   // set previous rss item in the feed as selected item
-  const prevItem = () => {
-    if (!feedItems) {
+  const prevItem = useCallback(() => {
+    if (!sessionItems) {
       return;
     }
     let index = 0;
     if (selectedItem) {
-      index = feedItems.findIndex(item => item.id === selectedItem.id);
+      index = sessionItems.findIndex(item => item.id === selectedItem.id);
     }
     if (index > 0) {
-      setSelectedItem(feedItems[index - 1]);
+      setSelectedItem(sessionItems[index - 1]);
     }
-  };
+  }, [sessionItems, selectedItem]);
+
+  // copy loaded feed items to session feed items
+  // only do this on mount
+  useEffect(() => {
+    if (!feedItems) {
+      return;
+    }
+    if (sessionItems) {
+      return;
+    }
+    setSessionItems([...feedItems]);
+  }, [feedItems]);
 
   // TODO: implement all shortcuts
   const escapeListener = useCallback(
@@ -165,6 +195,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     [selectedItem],
   );
 
+  // register shortcuts
   useEffect(() => {
     if (document) {
       document.addEventListener("keyup", escapeListener);
@@ -177,12 +208,12 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   }, [escapeListener]);
 
   const refreshInterval = config?.refreshInterval;
-  const refreshFeeds = () => {
+  const refreshFeeds = useCallback(async () => {
     if (!feeds) {
       return;
     }
     return fetchFeeds(feeds, refreshInterval);
-  };
+  }, [feeds, refreshInterval]);
 
   let intervalID: any = 0;
   useEffect(() => {
@@ -203,9 +234,9 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     feeds,
     config,
     categories,
-    feedItems,
+    feedItems: sessionItems, // instead of feedItems, show sessionItems
     setSelectedItem,
-    setFeed,
+    setFeed: setFeedCallback,
     feed,
     countAll,
     nextItem,
