@@ -9,45 +9,71 @@ import { FeedItem } from "@/types";
 
 export const FeedsItemsList = () => {
   const { feedItems, selectedItem, setSelectedItem } = useAppContext();
-  const [readState, setReadState] = useState({});
+  const [readState, setReadState] = useState<{ [key: string]: boolean }>({});
   // set initial read state
   useEffect(() => {
     if (feedItems) {
+      console.log(`set initial read state: ${feedItems.length}`);
       setReadState(
-        feedItems.reduce((acc, item) => {
-          acc[item.id] = item.isRead;
-          return acc;
-        }, {}),
+        feedItems.reduce(
+          (acc, item) => {
+            acc[item.id] = item.isRead;
+            return acc;
+          },
+          {} as { [key: string]: boolean },
+        ),
       );
     }
   }, [feedItems]);
 
   // set read state when item is selected
   useEffect(() => {
-    if (selectedItem) {
+    if (selectedItem && !readState[selectedItem.id]) {
+      console.log(`set read state when item is selected`);
       setReadState({
         ...readState,
         [selectedItem.id]: true,
       });
     }
-  }, [selectedItem]);
-  const selectCallback = useCallback((item: FeedItem | undefined) => {
-    if (!item) {
-      return;
-    }
-    markRead(item);
-    setReadState({
-      ...readState,
-      [item.id]: true,
-    });
-    setSelectedItem(item);
-  }, []);
-  const toggleReadCallback = useCallback((item: FeedItem | undefined) => {
-    setReadState({
-      ...readState,
-      [item?.id]: !readState[item?.id],
-    });
-  }, []);
+  }, [readState, selectedItem]);
+  const selectCallback = useCallback(
+    (item: FeedItem | undefined) => {
+      if (!item) {
+        return;
+      }
+      markRead(item);
+      setReadState({
+        ...readState,
+        [item.id]: true,
+      });
+      setSelectedItem(item);
+    },
+    [readState, setSelectedItem],
+  );
+  const toggleReadCallback = useCallback(
+    (item: FeedItem | undefined) => {
+      if (!item) {
+        return;
+      }
+      setReadState({
+        ...readState,
+        [item.id]: !readState[item.id],
+      });
+    },
+    [readState],
+  );
+  const setReadCallback = useCallback(
+    (item: FeedItem | undefined) => {
+      if (!item || readState[item.id]) {
+        return;
+      }
+      setReadState({
+        ...readState,
+        [item.id]: true,
+      });
+    },
+    [readState],
+  );
 
   return (
     <div className="flex md:gap-4">
@@ -65,11 +91,11 @@ export const FeedsItemsList = () => {
         })}
         {feedItems?.length === 0 && (
           <li className="">
-            <p className="mx-auto text-center text-2xl text-gray-400">No feeds found</p>
+            <p className="mx-auto text-center text-2xl text-gray-400 dark:text-gray-300">No feeds found</p>
           </li>
         )}
       </ul>
-      {selectedItem && <FeedDetailsItem item={selectedItem} toggleRead={toggleReadCallback} />}
+      {selectedItem && <FeedDetailsItem item={selectedItem} toggleRead={setReadCallback} />}
     </div>
   );
 };

@@ -2,10 +2,11 @@ import { useEffect } from "react";
 import DOMPurify from "dompurify";
 import Author from "@/app/feeds/item/author";
 import Category from "@/app/feeds/item/category";
-import Image from "@/app/feeds/item/image";
+import FeedItemImage from "@/app/feeds/item/feedItemImage";
 import PubDate from "@/app/feeds/item/pub-date";
 import { useAppContext } from "@/context/AppContext";
 import { FeedItem, markRead } from "@/lib/db";
+import { getFeedItemContent } from "@/lib/feeds";
 
 export const FeedDetailsItem = ({
   item,
@@ -14,26 +15,40 @@ export const FeedDetailsItem = ({
   item: FeedItem;
   toggleRead: (item: FeedItem | undefined) => void;
 }) => {
-  const content = DOMPurify.sanitize(item.description || "", { FORBID_TAGS: ["iframe"] });
+  const description = getFeedItemContent(item);
+  const content = DOMPurify.sanitize(description, { FORBID_TAGS: ["iframe"] });
+  const title = DOMPurify.sanitize(item.title);
+  const { setSelectedItem } = useAppContext();
   useEffect(() => {
     markRead(item);
     toggleRead(item); // will it work?
-  }, [item]);
+  }, [item, toggleRead]);
   const { nextItem, prevItem } = useAppContext();
   return (
-    <div className="absolute bottom-0 left-8 right-0 top-0 place-content-center overflow-hidden overflow-y-auto rounded-l-2xl border-l-2 bg-white drop-shadow-2xl md:left-48">
+    <div className="absolute bottom-0 left-8 right-0 top-0 place-content-center overflow-hidden overflow-y-auto rounded-l-2xl border-l-2 bg-white md:left-48 dark:border-gray-900 dark:bg-gray-600">
       <button
+        className="absolute left-2 top-2 rounded-full bg-transparent p-6"
+        type="button"
+        onClick={() => {
+          setSelectedItem(undefined);
+        }}
+      >
+        <span className="inline-block h-6 w-6 text-2xl">❌</span>
+      </button>
+      <button
+        className="absolute left-12 top-1/2 rounded-full bg-transparent p-6"
         type="button"
         onClick={() => {
           prevItem();
         }}
       >
-        Previous
+        <span className="sr-only">Previous</span>
+        <span className="inline-block h-6 w-6 text-4xl">⬅️</span>
       </button>
-      <div className="mx-auto flex max-w-lg flex-col md:max-w-2xl lg:max-w-4xl">
-        <div className="">
-          <a href={item.link} target="_blank" className="text-lg uppercase hover:underline">
-            {item.title} 🔗
+      <div className="mx-auto flex h-full max-w-lg flex-col overflow-hidden overflow-y-scroll bg-gray-50 px-4 py-12 md:max-w-2xl lg:max-w-4xl dark:bg-gray-700">
+        <div className="sticky top-0">
+          <a href={item.link} target="_blank" className="text-lg uppercase hover:underline dark:text-slate-100">
+            <span dangerouslySetInnerHTML={{ __html: title }} /> 🔗
           </a>
         </div>
         <div className="meta text-sm text-gray-400">
@@ -41,19 +56,21 @@ export const FeedDetailsItem = ({
           <Author item={item} />
           <Category item={item} />
         </div>
-        <Image item={item} />
+        <FeedItemImage item={item} />
         <div
-          className="prose prose-stone mt-4 max-h-[500px] w-full overflow-hidden overflow-y-scroll"
+          className="prose prose-xl prose-stone mt-4 max-h-[500px] w-full dark:prose-invert"
           dangerouslySetInnerHTML={{ __html: content }}
         />
       </div>
       <button
+        className="absolute right-12 top-1/2 rounded-full bg-transparent p-6"
         type="button"
         onClick={() => {
           nextItem();
         }}
       >
-        Next
+        <span className="sr-only">Next</span>
+        <span className="inline-block h-6 w-6 text-4xl">➡️</span>
       </button>
     </div>
   );

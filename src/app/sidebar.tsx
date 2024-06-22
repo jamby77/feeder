@@ -6,7 +6,7 @@ import { Category } from "@/lib/db";
 export const Sidebar = ({}) => {
   const { categories, feeds, setFeed, countAll } = useAppContext();
   return (
-    <aside className="max-h-screen-top w-full max-w-96 overflow-hidden overflow-y-auto">
+    <aside className="max-h-screen-top w-full max-w-96 overflow-hidden overflow-y-auto bg-gray-800 dark:text-gray-300">
       <div className="space-y-2">
         <h2 className="cursor-pointer p-3 text-xl" onClick={() => setFeed(undefined)}>
           All {countAll ? `(${countAll})` : ""}

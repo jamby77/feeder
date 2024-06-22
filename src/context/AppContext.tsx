@@ -1,9 +1,9 @@
 "use client";
 
 import { useLiveQuery } from "dexie-react-hooks";
-import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { db } from "@/lib/db";
-import { AppConfig, Category, Feed, FeedItem } from "@/types";
+import { AppConfig, Category, Command, Feed, FeedItem } from "@/types";
 
 type AppContextValueType = {
   selectedItem: FeedItem | undefined;
@@ -194,18 +194,65 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     },
     [selectedItem],
   );
+  const command: { [key in Command]: () => void } = useMemo(() => {
+    return {
+      nextUnread(): void {},
+      prevUnread(): void {},
+      refresh(): void {},
+      toggleHideEmptyCategories(): void {},
+      toggleHideEmptyFeeds(): void {},
+      toggleHideRead(): void {},
+      toggleNewOnTop(): void {},
+      next: nextItem,
+      prev: prevItem,
+    };
+  }, [nextItem, prevItem]);
 
   // register shortcuts
   useEffect(() => {
+    let eventListeners: ((e: KeyboardEvent) => void)[] = [];
     if (document) {
       document.addEventListener("keyup", escapeListener);
+      if (config) {
+        const { shortcuts } = config || [];
+        shortcuts.forEach(sc => {
+          if (command[sc.command]) {
+            eventListeners.push(function (e: KeyboardEvent) {
+              e.preventDefault();
+              if (e.key !== sc.key) {
+                return;
+              }
+              if (sc.altKey && !e.altKey) {
+                return;
+              }
+              if (sc.ctrlKey && !e.ctrlKey) {
+                return;
+              }
+              if (sc.metaKey && !e.metaKey) {
+                return;
+              }
+              if (sc.shiftKey && !e.shiftKey) {
+                return;
+              }
+              console.log(`running command: ${sc.title}`);
+              command[sc.command]();
+            });
+          }
+        });
+        eventListeners.forEach(listener => {
+          document.addEventListener("keyup", listener);
+        });
+      }
     }
     return () => {
       if (document) {
         document.removeEventListener("keyup", escapeListener);
+        eventListeners.forEach(listener => {
+          document.removeEventListener("keyup", listener);
+        });
       }
     };
-  }, [escapeListener]);
+  }, [command, config, escapeListener]);
 
   const refreshInterval = config?.refreshInterval;
   const refreshFeeds = useCallback(async () => {
@@ -215,9 +262,8 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     return fetchFeeds(feeds, refreshInterval);
   }, [feeds, refreshInterval]);
 
-  let intervalID: any = 0;
   useEffect(() => {
-    intervalID = setInterval(
+    const intervalID = setInterval(
       () => {
         if (!feeds) {
           return;
