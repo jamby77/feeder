@@ -4,7 +4,7 @@ import { useAppContext } from "@/context/AppContext";
 import { Category } from "@/lib/db";
 
 export const Sidebar = ({}) => {
-  const { categories, feeds, setFeed, countAll } = useAppContext();
+  const { categories, feeds, setFeed, countAll, countCurrent, feed: currentFeed } = useAppContext();
   return (
     <aside className="max-h-screen-top w-full max-w-96 overflow-hidden overflow-y-auto bg-gray-800 dark:text-gray-300">
       <div className="space-y-2">
@@ -19,21 +19,27 @@ export const Sidebar = ({}) => {
               <ul className="space-y-4 pt-2">
                 {feeds
                   ?.filter(feed => feed.categories && feed.categories.includes(category.id))
-                  .map(feed => (
-                    <li key={feed.id} className="ps-4">
-                      <a
-                        href={`/feeds?feed=${feed.id}&title=${feed.title}`}
-                        onClick={e => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          setFeed(feed);
-                        }}
-                      >
-                        {feed.title}
-                        {feed.items?.length ? ` (${feed.items.length})` : ""}
-                      </a>
-                    </li>
-                  ))}
+                  .map(feed => {
+                    let itemsCount = feed.items?.length ?? 0;
+                    if (currentFeed?.id === feed.id && countCurrent) {
+                      itemsCount = countCurrent;
+                    }
+                    return (
+                      <li key={feed.id} className="ps-4">
+                        <a
+                          href={`/feeds?feed=${feed.id}&title=${feed.title}`}
+                          onClick={e => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setFeed(feed);
+                          }}
+                        >
+                          {feed.title}
+                          {itemsCount ? ` (${itemsCount})` : ""}
+                        </a>
+                      </li>
+                    );
+                  })}
               </ul>
             </div>
           ))}

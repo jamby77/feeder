@@ -15,6 +15,7 @@ type AppContextValueType = {
   categories: Category[] | undefined;
   feedItems: FeedItem[] | undefined;
   countAll: number | undefined;
+  countCurrent: number | undefined;
   nextItem: () => void;
   prevItem: () => void;
   refreshFeeds: () => void;
@@ -29,6 +30,7 @@ const defaultValue: AppContextValueType = {
   categories: undefined,
   feedItems: undefined,
   countAll: undefined,
+  countCurrent: undefined,
   nextItem: () => {},
   prevItem: () => {},
   refreshFeeds: () => {},
@@ -103,6 +105,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const [sessionItems, setSessionItems] = useState<FeedItem[] | undefined>(undefined);
   // current feed
   const [feed, setFeed] = useState<Feed | undefined>(undefined);
+  const feedUrl = feed?.xmlUrl;
 
   const setFeedCallback = useCallback(
     (newFeed: Feed | undefined) => {
@@ -118,6 +121,8 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const feeds = useLiveQuery(getFeeds);
   const configArray = useLiveQuery(() => db.config.toArray());
   const config = configArray && configArray.length > 0 ? configArray[0] : undefined;
+
+  const hideRead = config?.hideRead;
   // all feed categories
   const categories = useLiveQuery(() => db.categories.toArray());
 
@@ -126,8 +131,17 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     return db.feedItems.filter(item => !item.isRead).count();
   });
 
-  const hideRead = config?.hideRead;
-  const feedUrl = feed?.xmlUrl;
+  // count current unread feed items
+  const countCurrent = useLiveQuery(() => {
+    if (!feedUrl) {
+      return 0;
+    }
+    return db.feedItems
+      .where("feedId")
+      .equals(feedUrl)
+      .filter(item => !item.isRead)
+      .count();
+  }, [feedUrl]);
 
   // all current feed items
   const feedItems = useLiveQuery(() => {
@@ -285,6 +299,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     setFeed: setFeedCallback,
     feed,
     countAll,
+    countCurrent,
     nextItem,
     prevItem,
     refreshFeeds,

@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import DOMPurify from "dompurify";
+import FeedItemImage from "@/app/feeds/item/feedItemImage";
 import { FeedItem } from "@/lib/db";
 import { getFeedItemContent } from "@/lib/feeds";
 
@@ -48,7 +49,7 @@ export const FeedListItem = ({
           {itemIsRead ? "☑️" : "✅"}
         </button>
       </div>
-      {item.image && <img className="mt-4" src={item.image} alt={item.title} />}
+      <FeedItemImage item={item} />
       <div
         className="prose prose-stone mt-4 max-h-[500px] w-full overflow-hidden overflow-y-scroll dark:prose-invert"
         dangerouslySetInnerHTML={{ __html: content }}
