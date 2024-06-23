@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 import DOMPurify from "dompurify";
 import FeedItemImage from "@/app/feeds/item/feedItemImage";
-import { FeedItem } from "@/lib/db";
 import { getFeedItemContent } from "@/lib/feeds";
+import { FeedItem } from "@/types";
 
 export const FeedListItem = ({
   item,

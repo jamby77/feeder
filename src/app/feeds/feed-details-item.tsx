@@ -5,8 +5,9 @@ import Category from "@/app/feeds/item/category";
 import FeedItemImage from "@/app/feeds/item/feedItemImage";
 import PubDate from "@/app/feeds/item/pub-date";
 import { useAppContext } from "@/context/AppContext";
-import { FeedItem, markRead } from "@/lib/db";
+import { markRead } from "@/lib/db";
 import { getFeedItemContent } from "@/lib/feeds";
+import { FeedItem } from "@/types";
 
 export const FeedDetailsItem = ({
   item,
