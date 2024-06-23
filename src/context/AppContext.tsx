@@ -2,6 +2,7 @@
 
 import { useLiveQuery } from "dexie-react-hooks";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { Command } from "@/lib/commands";
 import {
   getCategories,
   getConfig,
@@ -11,7 +12,7 @@ import {
   getTotalUnreadCount,
   setFeedItems,
 } from "@/lib/db";
-import { AppConfig, Category, Command, Feed, FeedItem } from "@/types";
+import { AppConfig, Category, Feed, FeedItem } from "@/types";
 
 type AppContextValueType = {
   selectedItem: FeedItem | undefined;

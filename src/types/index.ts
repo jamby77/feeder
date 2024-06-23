@@ -1,15 +1,6 @@
-export type Command =
-  | "next"
-  | "prev"
-  | "nextUnread"
-  | "prevUnread"
-  | "toggleNewOnTop"
-  | "toggleHideRead"
-  | "toggleHideEmptyCategories"
-  | "toggleHideEmptyFeeds"
-  | "refresh";
+import { Command } from "@/lib/commands";
 
-interface Shortcut {
+export interface Shortcut {
   key: string;
   title: string;
   altKey: boolean;

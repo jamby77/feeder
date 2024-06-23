@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import SettingsNav from "@/app/settings/settings-nav";
 
 export const metadata: Metadata = {
   title: "Feeder - Settings",
@@ -12,5 +12,10 @@ export default function RootLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
-  return <div className="">{children}</div>;
+  return (
+    <div className="flex">
+      <SettingsNav />
+      {children}
+    </div>
+  );
 }

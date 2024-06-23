@@ -1,5 +1,6 @@
 import Dexie, { Collection, InsertType, type EntityTable } from "dexie";
-import { AppConfig, Category, Command, Feed, FeedItem } from "@/types";
+import { Command } from "@/lib/commands";
+import { AppConfig, Category, Feed, FeedItem } from "@/types";
 import data from "../mockData/data.json";
 
 const db = new Dexie("FeederDatabase") as Dexie & {
