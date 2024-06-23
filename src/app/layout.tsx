@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ReactNode } from "react";
-import FeedTitle from "@/app/feeds/feed-title";
-import Sidebar from "@/app/sidebar";
+import { TopNavBar } from "@/app/topNavBar";
 import { AppContextProvider } from "@/context/AppContext";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -20,13 +19,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} flex min-h-screen flex-col bg-gray-100 dark:bg-gray-600`}>
-        <div className="pt-topBar relative flex gap-2">
+      <body className={`${inter.className} flex h-full min-h-screen flex-col bg-gray-100 dark:bg-gray-600`}>
+        <div className="relative flex h-full min-h-screen flex-col pt-topBar">
           <AppContextProvider>
-            <div className="h-topBar fixed left-0 right-0 top-0 bg-gray-900/25 py-2 shadow-md backdrop-blur">
-              <FeedTitle />
-            </div>
-            <Sidebar />
+            <TopNavBar />
             {children}
           </AppContextProvider>
         </div>

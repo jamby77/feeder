@@ -11,7 +11,6 @@ export const Author = ({ item }: { item: FeedItem }) => {
   }
 
   if (typeof author !== "string") {
-    console.log({ author });
     return null;
   }
 
