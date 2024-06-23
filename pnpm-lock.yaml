@@ -32,6 +32,9 @@ importers:
       react-dom:
         specifier: 19.0.0-rc-1434af3d22-20240618
         version: 19.0.0-rc-1434af3d22-20240618(react@19.0.0-rc-1434af3d22-20240618)
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
     devDependencies:
       '@ianvs/prettier-plugin-sort-imports':
         specifier: ^4.2.1
