@@ -1,18 +1,30 @@
 "use client";
 
 import { useAppContext } from "@/context/AppContext";
-import { Category } from "@/lib/db";
+import { markAllRead } from "@/lib/db";
+import { Category } from "@/types";
 
 export const Sidebar = ({}) => {
   const { refreshFeeds, categories, feeds, setFeed, countAll, countCurrent, feed: currentFeed } = useAppContext();
   return (
-    <aside className="max-h-screen-top w-full max-w-96 overflow-hidden overflow-y-auto bg-gray-800 dark:text-gray-300">
+    <aside className="max-h-screen-top w-full max-w-96 overflow-hidden overflow-y-auto bg-gray-800 text-gray-300">
       <div className="space-y-2">
         <h2
-          className="inline-flex w-full cursor-pointer items-center justify-between p-3 text-xl"
+          className="inline-flex w-full cursor-pointer items-center justify-between gap-2 p-3 text-xl"
           onClick={() => setFeed(undefined)}
         >
-          <span className="inline-block">All {countAll ? `(${countAll})` : ""}</span>&nbsp;
+          <span className="inline-block flex-1">All {countAll ? `(${countAll})` : ""}</span>&nbsp;
+          <button
+            title="Mark Read"
+            className="relative h-12 w-12 rounded-full bg-slate-700 p-2"
+            onClick={() => {
+              console.log("mark all read");
+              markAllRead();
+            }}
+          >
+            <span className="sr-only">mark read</span>
+            <span className="text text-2xl leading-none">✔</span>
+          </button>
           <button title="Refresh" className="relative h-12 w-12 rounded-full bg-slate-700 p-2" onClick={refreshFeeds}>
             <span className="sr-only">refresh</span>
             <span className="text text-2xl leading-none">↻</span>
@@ -44,8 +56,17 @@ export const Sidebar = ({}) => {
                           <span className={`${currentFeed?.id === feed.id ? "font-bold underline" : ""}`}>
                             {feed.title}
                           </span>
-                          {itemsCount ? ` (${itemsCount})` : ""}
+                          <span>{itemsCount ? ` (${itemsCount})` : ""}</span>
                         </a>
+                        {itemsCount ? (
+                          <button
+                            className="ml-2 rounded-full px-2 hover:outline"
+                            title="Mark Read"
+                            onClick={() => markAllRead(feed.id)}
+                          >
+                            ✔
+                          </button>
+                        ) : null}
                       </li>
                     );
                   })}

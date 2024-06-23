@@ -46,15 +46,23 @@ export const FeedDetailsItem = ({
         <span className="inline-block h-6 w-6 text-4xl">⬅️</span>
       </button>
       <div className="mx-auto flex h-full max-w-lg flex-col overflow-hidden overflow-y-scroll bg-gray-50 px-4 py-12 md:max-w-2xl lg:max-w-4xl dark:bg-gray-700">
-        <div className="sticky top-0 bg-gray-50 dark:bg-gray-700">
-          <a href={item.link} target="_blank" className="text-lg uppercase hover:underline dark:text-slate-100">
-            <span dangerouslySetInnerHTML={{ __html: title }} /> 🔗
+        <div className="sticky top-0 bg-gray-50 dark:bg-gray-700" title={item.title}>
+          <a
+            href={item.link}
+            target="_blank"
+            className="inline-flex w-full items-center justify-start gap-4 text-lg uppercase hover:underline dark:text-slate-100"
+          >
+            <span>🔗</span>
+            <span className="inline-block max-w-[90%] truncate" dangerouslySetInnerHTML={{ __html: title }} />
           </a>
         </div>
         <div className="meta text-sm text-gray-400">
           <PubDate item={item} />
           <Author item={item} />
           <Category item={item} />
+          <div className="w-full max-w-96 truncate text-sm" title={item.feedId}>
+            in {item.feedId}
+          </div>
         </div>
         <FeedItemImage item={item} />
         <div

@@ -2,8 +2,15 @@
 
 import { useLiveQuery } from "dexie-react-hooks";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { Collection, InsertType } from "dexie";
-import { db } from "@/lib/db";
+import {
+  getCategories,
+  getConfig,
+  getFeedItems,
+  getFeeds,
+  getTotalFeedUnreadCount,
+  getTotalUnreadCount,
+  setFeedItems,
+} from "@/lib/db";
 import { AppConfig, Category, Command, Feed, FeedItem } from "@/types";
 
 type AppContextValueType = {
@@ -69,37 +76,10 @@ async function fetchFeeds(feeds: Feed[], refreshInterval: number = 10) {
     url: string;
     items: FeedItem[];
   }[];
-  if (json && json.length > 0) {
-    for (const feed of json) {
-      db.feeds.update(feed.url, { lastUpdated: now });
-      for (const item of feed.items) {
-        // todo: update feeds in db for last update date
-        const existingItem = await db.feedItems.get(item.id);
-        if (existingItem) {
-          continue;
-        }
-
-        db.feedItems.add(item);
-      }
-    }
-  }
+  await setFeedItems(json, now);
   return json;
 }
-async function getFeeds() {
-  const feeds = await db.feeds.toArray();
-  // Attach resolved properties "feed items" to each feed
-  // using parallel queries:
-  await Promise.all(
-    feeds.map(async feed => {
-      feed.items = await db.feedItems
-        .where("feedId")
-        .equals(feed.id)
-        .filter(item => !item.isRead)
-        .toArray();
-    }),
-  );
-  return feeds;
-}
+
 export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   // currently viewed item
   const [selectedItem, setSelectedItem] = useState<FeedItem | undefined>(undefined);
@@ -120,46 +100,26 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   );
   // all feeds
   const feeds = useLiveQuery(getFeeds);
-  const configArray = useLiveQuery(() => db.config.toArray());
-  const config = configArray && configArray.length > 0 ? configArray[0] : undefined;
+  const config = useLiveQuery(getConfig);
 
   const hideRead = config?.hideRead;
   // all feed categories
-  const categories = useLiveQuery(() => db.categories.toArray());
+  const categories = useLiveQuery(getCategories);
 
   // count all unread feed items
-  const countAll = useLiveQuery(() => {
-    return db.feedItems.filter(item => !item.isRead).count();
-  });
+  const countAll = useLiveQuery(getTotalUnreadCount);
 
   // count current unread feed items
   const countCurrent = useLiveQuery(() => {
     if (!feedUrl) {
       return 0;
     }
-    return db.feedItems
-      .where("feedId")
-      .equals(feedUrl)
-      .filter(item => !item.isRead)
-      .count();
+    return getTotalFeedUnreadCount(feedUrl);
   }, [feedUrl]);
 
   // all current feed items
   const feedItems = useLiveQuery(() => {
-    const feedItemsTable = db.feedItems;
-    function filterReadOut(item: FeedItem) {
-      if (!hideRead) {
-        return true;
-      }
-      return !item.isRead;
-    }
-    let collection: Collection<FeedItem, string, InsertType<FeedItem, "id">>;
-    if (feedUrl) {
-      collection = feedItemsTable.where("feedId").equals(feedUrl).and(filterReadOut);
-    } else {
-      collection = feedItemsTable.filter(filterReadOut);
-    }
-    return collection.reverse().sortBy("pubDate");
+    return getFeedItems(feedUrl, hideRead);
   }, [feedUrl, hideRead]);
 
   // set next rss item in the feed as selected item

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { FeedDetailsItem } from "@/app/feeds/feed-details-item";
 import { FeedListItem } from "@/app/feeds/feed-list-item";
 import { useAppContext } from "@/context/AppContext";
-import { markRead } from "@/lib/db";
+import { markRead, markUnread } from "@/lib/db";
 import { FeedItem } from "@/types";
 
 export const FeedsItemsList = () => {
@@ -55,6 +55,11 @@ export const FeedsItemsList = () => {
       if (!item) {
         return;
       }
+      if (readState[item.id]) {
+        markUnread(item);
+      } else {
+        markRead(item);
+      }
       setReadState({
         ...readState,
         [item.id]: !readState[item.id],
@@ -76,8 +81,8 @@ export const FeedsItemsList = () => {
   );
 
   return (
-    <div className="flex md:gap-4">
-      <ul className="max-h-screen-top flex w-full flex-col space-y-2 overflow-y-auto p-2 md:block md:p-6">
+    <div className="w-full">
+      <ul className="max-h-screen-top flex w-full flex-col gap-2 overflow-y-auto p-2 md:block md:p-6">
         {feedItems?.map(item => {
           return (
             <FeedListItem
@@ -90,7 +95,7 @@ export const FeedsItemsList = () => {
           );
         })}
         {feedItems?.length === 0 && (
-          <li className="">
+          <li className="w-full py-16">
             <p className="mx-auto text-center text-2xl text-gray-400 dark:text-gray-300">No feeds found</p>
           </li>
         )}
