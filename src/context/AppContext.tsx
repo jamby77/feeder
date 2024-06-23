@@ -2,6 +2,7 @@
 
 import { useLiveQuery } from "dexie-react-hooks";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { Collection, InsertType } from "dexie";
 import { db } from "@/lib/db";
 import { AppConfig, Category, Command, Feed, FeedItem } from "@/types";
 
@@ -145,18 +146,20 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
 
   // all current feed items
   const feedItems = useLiveQuery(() => {
-    const collection = db.feedItems;
+    const feedItemsTable = db.feedItems;
     function filterReadOut(item: FeedItem) {
       if (!hideRead) {
         return true;
       }
       return !item.isRead;
     }
+    let collection: Collection<FeedItem, string, InsertType<FeedItem, "id">>;
     if (feedUrl) {
-      return collection.where("feedId").equals(feedUrl).and(filterReadOut).toArray();
+      collection = feedItemsTable.where("feedId").equals(feedUrl).and(filterReadOut);
     } else {
-      return collection.filter(filterReadOut).toArray();
+      collection = feedItemsTable.filter(filterReadOut);
     }
+    return collection.reverse().sortBy("pubDate");
   }, [feedUrl, hideRead]);
 
   // set next rss item in the feed as selected item

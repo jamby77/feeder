@@ -4,12 +4,19 @@ import { useAppContext } from "@/context/AppContext";
 import { Category } from "@/lib/db";
 
 export const Sidebar = ({}) => {
-  const { categories, feeds, setFeed, countAll, countCurrent, feed: currentFeed } = useAppContext();
+  const { refreshFeeds, categories, feeds, setFeed, countAll, countCurrent, feed: currentFeed } = useAppContext();
   return (
     <aside className="max-h-screen-top w-full max-w-96 overflow-hidden overflow-y-auto bg-gray-800 dark:text-gray-300">
       <div className="space-y-2">
-        <h2 className="cursor-pointer p-3 text-xl" onClick={() => setFeed(undefined)}>
-          All {countAll ? `(${countAll})` : ""}
+        <h2
+          className="inline-flex w-full cursor-pointer items-center justify-between p-3 text-xl"
+          onClick={() => setFeed(undefined)}
+        >
+          <span className="inline-block">All {countAll ? `(${countAll})` : ""}</span>&nbsp;
+          <button title="Refresh" className="relative h-12 w-12 rounded-full bg-slate-700 p-2" onClick={refreshFeeds}>
+            <span className="sr-only">refresh</span>
+            <span className="text text-2xl leading-none">↻</span>
+          </button>
         </h2>
 
         {categories &&
@@ -34,7 +41,9 @@ export const Sidebar = ({}) => {
                             setFeed(feed);
                           }}
                         >
-                          {feed.title}
+                          <span className={`${currentFeed?.id === feed.id ? "font-bold underline" : ""}`}>
+                            {feed.title}
+                          </span>
                           {itemsCount ? ` (${itemsCount})` : ""}
                         </a>
                       </li>

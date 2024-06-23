@@ -7,6 +7,9 @@ function getItemUrl(item: Record<string, any>) {
   if (!link && url) {
     return url;
   }
+  if (typeof link === "object" && link["__attributes"] && link["__attributes"]["@_href"]) {
+    return link["__attributes"]["@_href"];
+  }
   return link;
 }
 
@@ -48,24 +51,34 @@ async function fetchFeedContent(url: string) {
 function parseFeedXml(xml: string) {
   const parserOptions: X2jOptions = {
     ignoreAttributes: false,
+    stopNodes: ["feed.entry.content"],
     allowBooleanAttributes: true,
     attributesGroupName: "__attributes",
     parseAttributeValue: true,
     parseTagValue: true,
+    ignoreDeclaration: true,
   };
   const parser = new XMLParser(parserOptions);
   return parser.parse(xml);
 }
 
 function getFeedItemDate(item: Record<string, any>) {
-  const pubDateStr = item.pubDate || "";
+  let pubDateStr = item.pubDate || "";
+  if (!pubDateStr && item.updated) {
+    // atom (vercel)
+    pubDateStr = item.updated;
+  }
   return pubDateStr.trim().length > 0 ? new Date(pubDateStr) : new Date();
 }
 
 export function getFeedItemContent(item: Record<string, any>) {
   let description = item.description || "";
   if (description && typeof description === "object" && description["#text"]) {
-    description = description["#text"];
+    description = description["#text"].trim();
+  } else if (item.content && typeof item.content === "object" && item.content["#text"]) {
+    description = item.content["#text"].trim();
+  } else if (item.summary && typeof item.summary === "object" && item.summary["#text"]) {
+    description = item.summary["#text"].trim();
   }
   return description;
 }
@@ -79,7 +92,7 @@ function buildFeedItem(feedId: string, item: Record<string, any>): FeedItem {
   const pubDate = getFeedItemDate(item);
   const feedItem = {
     id: link,
-    feedId: feedId,
+    feedId,
     title,
     description,
     pubDate,
@@ -98,7 +111,11 @@ function buildFeedItem(feedId: string, item: Record<string, any>): FeedItem {
 
 export async function getFeedItems(feedUrl: string) {
   const xml = await fetchFeedContent(feedUrl);
+
   const doc = parseFeedXml(xml);
-  const itemsNodes = doc?.rss?.channel?.item ?? doc?.rdf?.channel?.item;
+  let itemsNodes = doc?.rss?.channel?.item ?? doc?.rdf?.channel?.item;
+  if (!itemsNodes) {
+    itemsNodes = doc?.feed?.entry;
+  }
   return itemsNodes.map((item: Record<string, any>) => buildFeedItem(feedUrl, item));
 }

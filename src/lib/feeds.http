@@ -4,6 +4,6 @@ Content-Type: application/json
 
 {
     "url": [
-      "https://stolica.bg/rss.xml"
+      "https://vercel.com/atom"
     ]
 }
