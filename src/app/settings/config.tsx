@@ -117,7 +117,7 @@ export const Config = ({}) => {
           {scArray.map((_, idx) => {
             const sc = shortcuts.at(idx);
             // idxRef.current = idx;
-            return <Shortcut idx={idx} shortcut={sc} />;
+            return <Shortcut key={`${sc?.key || "__new__"}-${idx}`} idx={idx} shortcut={sc} />;
           })}
           <div>
             <button
