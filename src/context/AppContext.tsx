@@ -172,19 +172,27 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     },
     [selectedItem],
   );
+  const refreshInterval = config?.refreshInterval;
+  const refreshFeeds = useCallback(async () => {
+    if (!feeds) {
+      return;
+    }
+    return fetchFeeds(feeds, refreshInterval);
+  }, [feeds, refreshInterval]);
   const command: { [key in Command]: () => void } = useMemo(() => {
     return {
       nextUnread(): void {},
       prevUnread(): void {},
-      refresh(): void {},
+      refresh: refreshFeeds,
       toggleHideEmptyCategories(): void {},
       toggleHideEmptyFeeds(): void {},
       toggleHideRead(): void {},
       toggleNewOnTop(): void {},
       next: nextItem,
       prev: prevItem,
+      visitSite: () => {},
     };
-  }, [nextItem, prevItem]);
+  }, [nextItem, prevItem, refreshFeeds]);
 
   // register shortcuts
   useEffect(() => {
@@ -231,14 +239,6 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
       }
     };
   }, [command, config, escapeListener]);
-
-  const refreshInterval = config?.refreshInterval;
-  const refreshFeeds = useCallback(async () => {
-    if (!feeds) {
-      return;
-    }
-    return fetchFeeds(feeds, refreshInterval);
-  }, [feeds, refreshInterval]);
 
   useEffect(() => {
     const intervalID = setInterval(

@@ -52,6 +52,10 @@ export async function setup() {
   }
 }
 
+export function updateConfig(config: AppConfig) {
+  db.config.update(config.id, { ...config });
+}
+
 export function markRead(item: FeedItem) {
   db.feedItems.update(item.id, { isRead: true });
 }

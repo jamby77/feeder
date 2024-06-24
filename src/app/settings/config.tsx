@@ -1,9 +1,38 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import Shortcut from "@/app/settings/shortcut";
 import { useAppContext } from "@/context/AppContext";
-import { Shortcut as ShortcutType } from "@/types";
+import { updateConfig } from "@/lib/db";
+import { AppConfig, Shortcut as ShortcutType } from "@/types";
+
+const handleSubmit = (e: FormEvent<HTMLFormElement>, config: AppConfig) => {
+  e.preventDefault();
+  e.stopPropagation();
+  const form = e.currentTarget;
+  const formData = new FormData(form);
+  const shortcuts: ShortcutType[] = [];
+  const configUpdate = {
+    ...config,
+  };
+  formData.forEach((value, field) => {
+    if (field.startsWith("shortcuts")) {
+      // process shortcuts separately
+      const [_, idx, shortCutFieldName] = field.split(".");
+      if (!shortcuts.at(+idx)) {
+        shortcuts[+idx] = {} as ShortcutType;
+      }
+      // @ts-ignores
+      shortcuts[+idx][shortCutFieldName] = value;
+    } else {
+      // @ts-ignore
+      configUpdate[field] = value;
+    }
+  });
+  configUpdate.shortcuts = shortcuts;
+  // console.log({ configUpdate });
+  updateConfig(configUpdate);
+};
 
 export const Config = ({}) => {
   const { config } = useAppContext();
@@ -35,36 +64,7 @@ export const Config = ({}) => {
   } = config;
   return (
     <div className="max-w-2xl text-gray-900 dark:text-gray-300">
-      <form
-        name="config-form"
-        onSubmit={e => {
-          e.preventDefault();
-          e.stopPropagation();
-          const form = e.target as HTMLFormElement;
-          const formData = new FormData(form);
-          const shortcuts: ShortcutType[] = [];
-          console.log({ shortcuts });
-          const configUpdate = {
-            ...config,
-          };
-          formData.forEach((value, field) => {
-            if (field.startsWith("shortcuts")) {
-              // process shortcuts separately
-              const [_, idx, shortCutFieldName] = field.split(".");
-              if (!shortcuts.at(+idx)) {
-                shortcuts[+idx] = {} as ShortcutType;
-              }
-              // @ts-ignores
-              shortcuts[+idx][shortCutFieldName] = value;
-            } else {
-              // @ts-ignore
-              configUpdate[field] = value;
-            }
-          });
-          configUpdate.shortcuts = shortcuts;
-          console.log({ configUpdate });
-        }}
-      >
+      <form name="config-form" onSubmit={e => handleSubmit(e, config)}>
         <fieldset name="main" className="space-y-4 rounded-xl border-2 border-gray-700 p-4">
           <legend>Main</legend>
           <div className="input group flex flex-col">
