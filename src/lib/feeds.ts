@@ -1,7 +1,7 @@
 import { X2jOptions, XMLParser } from "fast-xml-parser";
 import { FeedItem } from "@/types";
 
-function getItemUrl(item: Record<string, any>) {
+export function getItemUrl(item: Record<string, any>) {
   const link = item.link || "";
   const url = item.url || "";
   if (!link && url) {

@@ -12,6 +12,7 @@ import {
   getTotalUnreadCount,
   setFeedItems,
 } from "@/lib/db";
+import { getItemUrl } from "@/lib/feeds";
 import { AppConfig, Category, Feed, FeedItem } from "@/types";
 
 type AppContextValueType = {
@@ -190,9 +191,18 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
       toggleNewOnTop(): void {},
       next: nextItem,
       prev: prevItem,
-      visitSite: () => {},
+      visitSite: () => {
+        if (!selectedItem) {
+          return;
+        }
+        const link = getItemUrl(selectedItem);
+        if (!link || !window) {
+          return;
+        }
+        window.open(link, "_blank");
+      },
     };
-  }, [nextItem, prevItem, refreshFeeds]);
+  }, [nextItem, prevItem, refreshFeeds, selectedItem]);
 
   // register shortcuts
   useEffect(() => {

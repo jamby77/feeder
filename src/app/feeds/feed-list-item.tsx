@@ -29,7 +29,7 @@ export const FeedListItem = ({
     <li
       onClick={handleSelect}
       onFocus={handleSelect}
-      className={`w-full max-w-96 cursor-pointer rounded border p-1 md:max-w-xl md:px-4 md:py-2 dark:border-gray-900 ${!itemIsRead ? "" : "bg-gray-100 opacity-50 dark:bg-gray-700"}`}
+      className={`w-full max-w-96 cursor-pointer rounded border p-1 md:max-w-6xl md:px-4 md:py-2 dark:border-gray-900 ${!itemIsRead ? "" : "bg-gray-100 opacity-50 dark:bg-gray-700"}`}
     >
       <div className="flex flex-nowrap items-start justify-between gap-2">
         <a

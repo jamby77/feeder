@@ -82,7 +82,7 @@ export const FeedsItemsList = () => {
 
   return (
     <div className="w-full">
-      <ul className="max-h-screen-top flex w-full flex-col gap-2 overflow-y-auto p-2 md:block md:p-6">
+      <ul className="flex max-h-screen-top w-full flex-col gap-2 overflow-y-auto p-2 md:gap-4 md:p-6">
         {feedItems?.map(item => {
           return (
             <FeedListItem
