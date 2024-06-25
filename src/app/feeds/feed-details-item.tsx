@@ -4,10 +4,12 @@ import Author from "@/app/feeds/item/author";
 import Category from "@/app/feeds/item/category";
 import FeedItemImage from "@/app/feeds/item/feedItemImage";
 import PubDate from "@/app/feeds/item/pub-date";
+import ShortcutHint from "@/app/feeds/shortcut-hint";
 import { useAppContext } from "@/context/AppContext";
+import { Command } from "@/lib/commands";
 import { markRead } from "@/lib/db";
 import { getFeedItemContent } from "@/lib/feeds";
-import { FeedItem } from "@/types";
+import { FeedItem, Shortcut } from "@/types";
 
 export const FeedDetailsItem = ({
   item,
@@ -19,7 +21,30 @@ export const FeedDetailsItem = ({
   const description = getFeedItemContent(item);
   const content = DOMPurify.sanitize(description, { FORBID_TAGS: ["iframe"] });
   const title = DOMPurify.sanitize(item.title);
-  const { setSelectedItem } = useAppContext();
+  const { setSelectedItem, config } = useAppContext();
+  const { prev, next } = useMemo(() => {
+    if (!config) {
+      return {} as {
+        [key in Command]: Shortcut;
+      };
+    }
+    const { shortcuts } = config;
+    return shortcuts.reduce(
+      (res, sc) => {
+        if (sc.command === "next") {
+          res.next = sc;
+        }
+        if (sc.command === "prev") {
+          res.prev = sc;
+        }
+        return res;
+      },
+      {} as {
+        [key in Command]: Shortcut;
+      },
+    );
+  }, [config]);
+
   useEffect(() => {
     markRead(item);
     toggleRead(item); // will it work?
@@ -62,26 +87,32 @@ export const FeedDetailsItem = ({
       >
         <span className="inline-block h-6 w-6 text-2xl">❌</span>
       </button>
-      <button
-        className="absolute left-12 top-1/2 rounded-full bg-transparent p-6"
-        type="button"
-        onClick={() => {
-          prevItem();
-        }}
-      >
-        <span className="sr-only">Previous</span>
-        <span className="inline-block h-6 w-6 text-4xl">⬅️</span>
-      </button>
-      <button
-        className="absolute right-12 top-1/2 rounded-full bg-transparent p-6"
-        type="button"
-        onClick={() => {
-          nextItem();
-        }}
-      >
-        <span className="sr-only">Next</span>
-        <span className="inline-block h-6 w-6 text-4xl">➡️</span>
-      </button>
+      <div className="absolute left-12 top-1/2 flex flex-col items-center">
+        <ShortcutHint sc={prev} />
+        <button
+          className="rounded-full bg-transparent p-6"
+          type="button"
+          onClick={() => {
+            prevItem();
+          }}
+        >
+          <span className="sr-only">Previous</span>
+          <span className="inline-block h-6 w-6 text-4xl">⬅️</span>
+        </button>
+      </div>
+      <div className="absolute right-12 top-1/2 flex flex-col items-center">
+        <ShortcutHint sc={next} />
+        <button
+          className="rounded-full bg-transparent p-6"
+          type="button"
+          onClick={() => {
+            nextItem();
+          }}
+        >
+          <span className="sr-only">Next</span>
+          <span className="inline-block h-6 w-6 text-4xl">➡️</span>
+        </button>
+      </div>
     </div>
   );
 };
