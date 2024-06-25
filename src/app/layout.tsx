@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ReactNode } from "react";
+import { Toaster } from "react-hot-toast";
 import { TopNavBar } from "@/app/topNavBar";
 import { AppContextProvider } from "@/context/AppContext";
 
@@ -24,6 +25,12 @@ export default function RootLayout({
           <AppContextProvider>
             <TopNavBar />
             {children}
+            <Toaster
+              position="bottom-center"
+              toastOptions={{
+                duration: 2000,
+              }}
+            />
           </AppContextProvider>
         </div>
       </body>

@@ -1,5 +1,6 @@
 "use client";
 
+import toast from "react-hot-toast";
 import { useAppContext } from "@/context/AppContext";
 import { markAllRead } from "@/lib/db";
 import { Category } from "@/types";
@@ -18,7 +19,7 @@ export const Sidebar = ({}) => {
             title="Mark Read"
             className="relative h-12 w-12 rounded-full bg-slate-700 px-3 hover:bg-slate-600"
             onClick={() => {
-              console.log("mark all read");
+              toast.success("All marked read", {});
               markAllRead();
             }}
           >
@@ -38,7 +39,10 @@ export const Sidebar = ({}) => {
           <button
             title="Refresh"
             className="relative h-12 w-12 rounded-full bg-slate-700 px-3 hover:bg-slate-600"
-            onClick={refreshFeeds}
+            onClick={() => {
+              toast.loading("Refreshing ...", { duration: 5000 });
+              refreshFeeds();
+            }}
           >
             <span className="sr-only">refresh</span>
             <span className="text-gray-300">
@@ -87,7 +91,10 @@ export const Sidebar = ({}) => {
                           <button
                             className="ml-2 rounded-full px-2 hover:outline"
                             title="Mark Read"
-                            onClick={() => markAllRead(feed.id)}
+                            onClick={() => {
+                              toast.success(`${feed.title} marked read`, {});
+                              return markAllRead(feed.id);
+                            }}
                           >
                             ✔
                           </button>
