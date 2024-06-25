@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
 import Shortcut from "@/app/settings/shortcut";
 import { useAppContext } from "@/context/AppContext";
 import { updateConfig } from "@/lib/db";
@@ -64,7 +65,14 @@ export const Config = ({}) => {
   } = config;
   return (
     <div className="max-w-2xl text-gray-900 dark:text-gray-300">
-      <form name="config-form" onSubmit={e => handleSubmit(e, config)}>
+      <form
+        name="config-form"
+        onSubmit={e => {
+          toast.success("Config saved");
+
+          handleSubmit(e, config);
+        }}
+      >
         <fieldset name="main" className="space-y-4 rounded-xl border-2 border-gray-700 p-4">
           <legend>Main</legend>
           <div className="input group flex flex-col">
@@ -122,16 +130,27 @@ export const Config = ({}) => {
           <div>
             <button
               type="button"
-              className="ml-auto block h-16 w-16 rounded-full bg-gray-500 p-2 text-4xl leading-none text-blue-400 shadow-xl backdrop-blur"
+              className="ml-auto block h-16 w-16 rounded-full bg-gray-500 px-3 text-blue-400 shadow-xl backdrop-blur"
               onClick={() => {
                 setIdxState(idxState => idxState + 1);
               }}
             >
-              +
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="40px"
+                viewBox="0 -960 960 960"
+                width="40px"
+                fill="currentColor"
+              >
+                <path d="M446.67-446.67H200v-66.66h246.67V-760h66.66v246.67H760v66.66H513.33V-200h-66.66v-246.67Z" />
+              </svg>
             </button>
           </div>
         </fieldset>
-        <button type="submit" className="mt-4 w-full rounded-full border px-2 py-1 md:max-w-36 md:px-4 md:py-4">
+        <button
+          type="submit"
+          className="mb-8 mt-4 w-full rounded-full border bg-green-500 px-2 py-1 text-gray-50 md:max-w-36 md:px-4 md:py-2 dark:bg-green-600"
+        >
           Save Config
         </button>
       </form>
