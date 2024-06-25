@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import DOMPurify from "dompurify";
 import Author from "@/app/feeds/item/author";
 import Category from "@/app/feeds/item/category";
@@ -24,7 +24,8 @@ export const FeedDetailsItem = ({
     markRead(item);
     toggleRead(item); // will it work?
   }, [item, toggleRead]);
-  const { nextItem, prevItem } = useAppContext();
+  const { nextItem, prevItem, feeds } = useAppContext();
+  const feed = useMemo(() => feeds?.find(f => f.id === item.feedId), [item.feedId, feeds]);
   return (
     <div className="absolute bottom-0 left-8 right-0 top-0 place-content-center overflow-hidden overflow-y-auto rounded-l-2xl border-l-2 bg-white md:left-48 dark:border-gray-900 dark:bg-gray-600">
       <div className="mx-auto flex h-full max-w-lg flex-col overflow-hidden overflow-y-scroll bg-gray-50 px-4 pb-12 md:max-w-2xl lg:max-w-4xl dark:bg-gray-700">
@@ -43,7 +44,7 @@ export const FeedDetailsItem = ({
           <Author item={item} />
           <Category item={item} />
           <div className="w-full max-w-96 truncate text-sm" title={item.feedId}>
-            in {item.feedId}
+            from {feed?.title}
           </div>
         </div>
         <FeedItemImage item={item} />

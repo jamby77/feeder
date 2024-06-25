@@ -206,28 +206,24 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
 
   // register shortcuts
   useEffect(() => {
-    let eventListeners: ((e: KeyboardEvent) => void)[] = [];
+    const eventListeners: ((e: KeyboardEvent) => void)[] = [escapeListener];
     if (document) {
-      document.addEventListener("keyup", escapeListener);
       if (config) {
         const { shortcuts } = config || [];
         shortcuts.forEach(sc => {
           if (command[sc.command]) {
             eventListeners.push(function (e: KeyboardEvent) {
               e.preventDefault();
-              if (e.key !== sc.key) {
-                return;
-              }
-              if (sc.altKey && !e.altKey) {
-                return;
-              }
-              if (sc.ctrlKey && !e.ctrlKey) {
-                return;
-              }
-              if (sc.metaKey && !e.metaKey) {
-                return;
-              }
-              if (sc.shiftKey && !e.shiftKey) {
+              const { key, isComposing, isTrusted } = e;
+              if (
+                !isTrusted ||
+                isComposing ||
+                key !== sc.key ||
+                (sc.altKey && !e.altKey) ||
+                (sc.ctrlKey && !e.ctrlKey) ||
+                (sc.metaKey && !e.metaKey) ||
+                (sc.shiftKey && !e.shiftKey)
+              ) {
                 return;
               }
               console.log(`running command: ${sc.title}`);
@@ -242,7 +238,6 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     }
     return () => {
       if (document) {
-        document.removeEventListener("keyup", escapeListener);
         eventListeners.forEach(listener => {
           document.removeEventListener("keyup", listener);
         });
