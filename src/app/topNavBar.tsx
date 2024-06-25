@@ -2,13 +2,16 @@ import Link from "next/link";
 import FeedTitle from "@/app/feeds/feed-title";
 
 export const TopNavBar = () => (
-  <header className="fixed left-0 right-0 top-0 flex h-topBar items-center justify-start bg-gray-900/25 py-2 shadow-md backdrop-blur">
+  <header className="fixed left-0 right-0 top-0 flex h-topBar items-center justify-start bg-gray-900/25 py-2 text-gray-900 shadow-md backdrop-blur">
     <div className="w-full">
       <FeedTitle />
     </div>
     <nav className="mx-4 flex flex-shrink-0 flex-grow-0 justify-end gap-1 md:mx-16">
       <div className="h-12 w-12 hover:text-gray-500" title="Feeds">
-        <Link className="flex h-full w-full items-center justify-center" href="/feeds">
+        <Link
+          className="flex h-full w-full items-center justify-center text-gray-900 hover:text-gray-500 dark:text-gray-300"
+          href="/feeds"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="36px"
@@ -21,7 +24,10 @@ export const TopNavBar = () => (
         </Link>
       </div>
       <div className="h-12 w-12 hover:text-gray-500" title="Settings">
-        <Link className="flex h-full w-full items-center justify-center" href="/settings">
+        <Link
+          className="flex h-full w-full items-center justify-center text-gray-900 hover:text-gray-500 dark:text-gray-300"
+          href="/settings"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="36px"
