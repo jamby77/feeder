@@ -27,27 +27,8 @@ export const FeedDetailsItem = ({
   const { nextItem, prevItem } = useAppContext();
   return (
     <div className="absolute bottom-0 left-8 right-0 top-0 place-content-center overflow-hidden overflow-y-auto rounded-l-2xl border-l-2 bg-white md:left-48 dark:border-gray-900 dark:bg-gray-600">
-      <button
-        className="absolute left-2 top-2 rounded-full bg-transparent p-6"
-        type="button"
-        onClick={() => {
-          setSelectedItem(undefined);
-        }}
-      >
-        <span className="inline-block h-6 w-6 text-2xl">❌</span>
-      </button>
-      <button
-        className="absolute left-12 top-1/2 rounded-full bg-transparent p-6"
-        type="button"
-        onClick={() => {
-          prevItem();
-        }}
-      >
-        <span className="sr-only">Previous</span>
-        <span className="inline-block h-6 w-6 text-4xl">⬅️</span>
-      </button>
-      <div className="mx-auto flex h-full max-w-lg flex-col overflow-hidden overflow-y-scroll bg-gray-50 px-4 py-12 md:max-w-2xl lg:max-w-4xl dark:bg-gray-700">
-        <div className="sticky top-0 bg-gray-50 dark:bg-gray-700" title={item.title}>
+      <div className="mx-auto flex h-full max-w-lg flex-col overflow-hidden overflow-y-scroll bg-gray-50 px-4 pb-12 md:max-w-2xl lg:max-w-4xl dark:bg-gray-700">
+        <div className="sticky top-0 bg-gray-50 pb-4 pt-12 dark:bg-gray-700" title={item.title}>
           <a
             href={item.link}
             target="_blank"
@@ -71,6 +52,25 @@ export const FeedDetailsItem = ({
           dangerouslySetInnerHTML={{ __html: content }}
         />
       </div>
+      <button
+        className="absolute left-2 top-2 rounded-full bg-transparent p-6"
+        type="button"
+        onClick={() => {
+          setSelectedItem(undefined);
+        }}
+      >
+        <span className="inline-block h-6 w-6 text-2xl">❌</span>
+      </button>
+      <button
+        className="absolute left-12 top-1/2 rounded-full bg-transparent p-6"
+        type="button"
+        onClick={() => {
+          prevItem();
+        }}
+      >
+        <span className="sr-only">Previous</span>
+        <span className="inline-block h-6 w-6 text-4xl">⬅️</span>
+      </button>
       <button
         className="absolute right-12 top-1/2 rounded-full bg-transparent p-6"
         type="button"
