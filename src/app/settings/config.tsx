@@ -39,6 +39,7 @@ export const Config = ({}) => {
   const { config } = useAppContext();
 
   const [idxState, setIdxState] = useState(0);
+
   const scArray = useMemo(() => {
     return new Array(idxState).fill(0);
   }, [idxState]);
@@ -53,7 +54,7 @@ export const Config = ({}) => {
   if (!config) {
     return null;
   }
-  const {
+  let {
     title = "",
     refreshInterval = 10,
     enableShortcuts = true,
@@ -125,7 +126,19 @@ export const Config = ({}) => {
           {scArray.map((_, idx) => {
             const sc = shortcuts.at(idx);
             // idxRef.current = idx;
-            return <Shortcut key={`${sc?.key || "__new__"}-${idx}`} idx={idx} shortcut={sc} />;
+            return (
+              <Shortcut
+                key={`${sc?.key || "__new__"}-${idx}`}
+                idx={idx}
+                shortcut={sc}
+                onDelete={() => {
+                  if (sc) {
+                    shortcuts = shortcuts.filter(s => s !== sc);
+                  }
+                  setIdxState(idxState => idxState - 1);
+                }}
+              />
+            );
           })}
           <div>
             <button

@@ -31,10 +31,10 @@ export const FeedDetailsItem = ({
     const { shortcuts } = config;
     return shortcuts.reduce(
       (res, sc) => {
-        if (sc.command === "next") {
+        if (sc.command === "next" && !res.next) {
           res.next = sc;
         }
-        if (sc.command === "prev") {
+        if (sc.command === "prev" && !res.prev) {
           res.prev = sc;
         }
         return res;
