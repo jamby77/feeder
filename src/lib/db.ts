@@ -153,6 +153,7 @@ export async function getFeedItems(feedUrl?: string, hideRead = false) {
   } else {
     collection = feedItemsTable.filter(filterReadOut);
   }
+  console.log("getFeedItems called");
   return collection.reverse().sortBy("pubDate");
 }
 

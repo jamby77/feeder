@@ -127,14 +127,19 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   // set next rss item in the feed as selected item
   const nextItem = useCallback(() => {
     if (!sessionItems) {
+      console.log("no session items");
       return;
     }
     let index = 0;
     if (selectedItem) {
       index = sessionItems.findIndex(item => item.id === selectedItem.id);
     }
+    console.log({ index, sessionItems });
     if (index >= 0 && index < sessionItems.length - 1) {
       setSelectedItem(sessionItems[index + 1]);
+    } else if (index === 0 && !selectedItem && sessionItems.length) {
+      // if nothing is currently selected and try to navigate to next item, start from the beginning
+      setSelectedItem(sessionItems[0]);
     }
   }, [sessionItems, selectedItem]);
 
@@ -149,6 +154,9 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     }
     if (index > 0) {
       setSelectedItem(sessionItems[index - 1]);
+    } else if (index === 0 && !selectedItem && sessionItems.length) {
+      // if nothing is currently selected and try to navigate to prev item, start from the end
+      setSelectedItem(sessionItems.at(-1));
     }
   }, [sessionItems, selectedItem]);
 
