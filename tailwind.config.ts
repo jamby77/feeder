@@ -8,6 +8,15 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      keyframes: {
+        tikTak: {
+          "50%": { transform: "rotate(190deg)" },
+          "100%": { transform: "rotate(-10deg)" },
+        },
+      },
+      animation: {
+        tikTak: "tikTak 4s linear infinite",
+      },
       spacing: {
         topBar: "var(--top-bar-height)",
       },

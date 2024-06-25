@@ -88,30 +88,50 @@ export const FeedDetailsItem = ({
         <span className="inline-block h-6 w-6 text-2xl">❌</span>
       </button>
       <div className="absolute left-12 top-1/2 flex flex-col items-center">
-        <ShortcutHint sc={prev} />
         <button
-          className="rounded-full bg-transparent p-6"
+          className="mb-2 h-16 w-16 rounded-full bg-transparent text-gray-400 hover:bg-gray-200"
           type="button"
           onClick={() => {
             prevItem();
           }}
         >
           <span className="sr-only">Previous</span>
-          <span className="inline-block h-6 w-6 text-4xl">⬅️</span>
+          <span className="inline-block h-6 w-6 pl-1 pt-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="currentColor"
+            >
+              <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
+            </svg>
+          </span>
         </button>
+        <ShortcutHint sc={prev} />
       </div>
       <div className="absolute right-12 top-1/2 flex flex-col items-center">
-        <ShortcutHint sc={next} />
         <button
-          className="rounded-full bg-transparent p-6"
+          className="mb-2 h-16 w-16 rounded-full bg-transparent text-gray-400 hover:bg-gray-200"
           type="button"
           onClick={() => {
             nextItem();
           }}
         >
           <span className="sr-only">Next</span>
-          <span className="inline-block h-6 w-6 text-4xl">➡️</span>
+          <span className="inline-block h-6 w-6 pr-1 pt-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="currentColor"
+            >
+              <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" />
+            </svg>
+          </span>
         </button>
+        <ShortcutHint sc={next} />
       </div>
     </div>
   );

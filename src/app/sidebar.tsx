@@ -16,18 +16,42 @@ export const Sidebar = ({}) => {
           <span className="inline-block flex-1">All {countAll ? `(${countAll})` : ""}</span>&nbsp;
           <button
             title="Mark Read"
-            className="relative h-12 w-12 rounded-full bg-slate-700 p-2"
+            className="relative h-12 w-12 rounded-full bg-slate-700 px-3 hover:bg-slate-600"
             onClick={() => {
               console.log("mark all read");
               markAllRead();
             }}
           >
             <span className="sr-only">mark read</span>
-            <span className="text text-2xl leading-none">✔</span>
+            <span className="text-gray-300">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="currentColor"
+              >
+                <path d="M268-240 42-466l57-56 170 170 56 56-57 56Zm226 0L268-466l56-57 170 170 368-368 56 57-424 424Zm0-226-57-56 198-198 57 56-198 198Z" />
+              </svg>
+            </span>
           </button>
-          <button title="Refresh" className="relative h-12 w-12 rounded-full bg-slate-700 p-2" onClick={refreshFeeds}>
+          <button
+            title="Refresh"
+            className="relative h-12 w-12 rounded-full bg-slate-700 px-3 hover:bg-slate-600"
+            onClick={refreshFeeds}
+          >
             <span className="sr-only">refresh</span>
-            <span className="text text-2xl leading-none">↻</span>
+            <span className="text-gray-300">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="currentColor"
+              >
+                <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z" />
+              </svg>
+            </span>
           </button>
         </h2>
 
@@ -46,6 +70,7 @@ export const Sidebar = ({}) => {
                     return (
                       <li key={feed.id} className="ps-4">
                         <a
+                          className="hover:text-gray-400"
                           href={`/feeds?feed=${feed.id}&title=${feed.title}`}
                           onClick={e => {
                             e.preventDefault();
