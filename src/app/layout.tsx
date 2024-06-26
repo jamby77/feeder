@@ -29,6 +29,11 @@ export default function RootLayout({
               position="bottom-center"
               toastOptions={{
                 duration: 2000,
+                style: {
+                  padding: "10px 20px",
+                  color: "rgb(209 213 219)",
+                  backgroundColor: "rgb(31 41 55 )",
+                },
               }}
             />
           </AppContextProvider>

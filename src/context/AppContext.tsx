@@ -2,6 +2,7 @@
 
 import { useLiveQuery } from "dexie-react-hooks";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
 import { Command } from "@/lib/commands";
 import {
   getCategories,
@@ -234,7 +235,9 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
               ) {
                 return;
               }
-              console.log(`running command: ${sc.title}`);
+              toast(<span style={{ textTransform: "capitalize" }}>running command: {sc.title}</span>, {
+                duration: 1000,
+              });
               command[sc.command]();
             });
           }
