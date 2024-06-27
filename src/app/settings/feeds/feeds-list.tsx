@@ -1,8 +1,20 @@
 "use client";
 
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import { CaretSortIcon, ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
+  SortingState,
+  useReactTable,
+} from "@tanstack/react-table";
 import { useLiveQuery } from "dexie-react-hooks";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { db, getTotalCount, getTotalFeedCount, getTotalFeedUnreadCount, getTotalUnreadCount } from "@/lib/db";
 
@@ -15,16 +27,84 @@ interface FeedCol {
 
 const columns: ColumnDef<FeedCol>[] = [
   {
+    accessorKey: "id",
+    header: ({ table }) => (
+      <Checkbox
+        className="mx-auto block"
+        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+        onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => {
+      const value = row.getValue("id");
+      return (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={value => row.toggleSelected(!!value)}
+          aria-label="Select row"
+          className="mx-auto block"
+          name="id"
+          value={value as string}
+        />
+      );
+    },
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
     accessorKey: "title",
-    header: "Feed Name",
+    header: ({ column }) => {
+      return (
+        <div
+          className="flex w-full cursor-pointer items-center"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <div className="flex-1">Feed Name</div>
+          <CaretSortIcon className="ml-2 h-4 w-4" />
+        </div>
+      );
+    },
+    cell: ({ row }) => {
+      const feed = row.original;
+      return <div className="max-w-96 truncate md:max-w-[500px]">{feed.title}</div>;
+    },
   },
   {
     accessorKey: "items",
-    header: "Articles Total",
+    header: ({ column }) => {
+      return (
+        <div
+          className="flex w-full cursor-pointer items-center"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <div className="flex-1">Articles Total</div>
+          <CaretSortIcon className="ml-2 h-4 w-4" />
+        </div>
+      );
+    },
+    cell: ({ row }) => {
+      const feed = row.original;
+      return <div className="text-right">{feed.items}</div>;
+    },
   },
   {
     accessorKey: "itemsUnread",
-    header: "Unread",
+    header: ({ column }) => {
+      return (
+        <div
+          className="flex w-full cursor-pointer items-center"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <div className="flex-1">Unread</div>
+          <CaretSortIcon className="ml-2 h-4 w-4" />
+        </div>
+      );
+    },
+    cell: ({ row }) => {
+      const feed = row.original;
+      return <div className="text-right">{feed.itemsUnread}</div>;
+    },
   },
 ];
 
@@ -53,7 +133,7 @@ const FeedsList = () => {
     [feeds],
     [],
   );
-  console.log({ counts });
+
   const data = useMemo(() => {
     if (!feeds || !Array.isArray(counts) || counts.length === 0) {
       return [];
@@ -65,20 +145,35 @@ const FeedsList = () => {
         title: feed.title,
         items: feedCounts?.count || 0,
         itemsUnread: feedCounts?.unread || 0,
+        categories: feed.categories,
       };
     });
   }, [counts, feeds]);
-  const table = useReactTable({
+
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [rowSelection, setRowSelection] = useState({});
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const { getHeaderGroups, getRowModel } = useReactTable({
     data,
     columns,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onRowSelectionChange: setRowSelection,
+    state: {
+      sorting,
+      columnFilters,
+      rowSelection,
+    },
   });
-
+  console.log({ sorting });
   return (
     <div className="rounded-md border">
       <Table>
         <TableHeader>
-          {table.getHeaderGroups().map(headerGroup => (
+          {getHeaderGroups().map(headerGroup => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map(header => {
                 return (
@@ -91,8 +186,8 @@ const FeedsList = () => {
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map(row => (
+          {getRowModel().rows?.length ? (
+            getRowModel().rows.map(row => (
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                 {row.getVisibleCells().map(cell => (
                   <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>

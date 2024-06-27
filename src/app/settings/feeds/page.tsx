@@ -1,6 +1,7 @@
 import FeedsFilters from "@/app/settings/feeds/feeds-filters";
 import FeedsList from "@/app/settings/feeds/feeds-list";
 import FeedsTitle from "@/app/settings/feeds/feeds-title";
+import { DataTableDemo } from "@/app/settings/feeds/test";
 
 const SettingsFeedsPage = () => {
   return (
