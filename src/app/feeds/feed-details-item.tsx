@@ -1,3 +1,4 @@
+import { ExternalLinkIcon } from "@radix-ui/react-icons";
 import { useEffect, useMemo, useRef } from "react";
 import DOMPurify from "dompurify";
 import Author from "@/app/feeds/item/author";
@@ -70,7 +71,7 @@ export const FeedDetailsItem = ({
             target="_blank"
             className="inline-flex w-full items-center justify-start gap-4 text-lg uppercase hover:underline dark:text-slate-100"
           >
-            <span>🔗</span>
+            <ExternalLinkIcon className="h-6 w-6" />
             <span className="inline-block max-w-[90%] truncate" dangerouslySetInnerHTML={{ __html: title }} />
           </a>
         </div>
