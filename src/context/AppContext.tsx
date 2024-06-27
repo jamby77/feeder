@@ -135,7 +135,6 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     if (selectedItem) {
       index = sessionItems.findIndex(item => item.id === selectedItem.id);
     }
-    console.log({ index, sessionItems });
     if (index >= 0 && index < sessionItems.length - 1) {
       setSelectedItem(sessionItems[index + 1]);
     } else if (index === 0 && !selectedItem && sessionItems.length) {

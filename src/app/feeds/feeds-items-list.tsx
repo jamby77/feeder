@@ -13,7 +13,6 @@ export const FeedsItemsList = () => {
   // set initial read state
   useEffect(() => {
     if (feedItems) {
-      console.log(`set initial read state: ${feedItems.length}`);
       setReadState(
         feedItems.reduce(
           (acc, item) => {
@@ -29,7 +28,6 @@ export const FeedsItemsList = () => {
   // set read state when item is selected
   useEffect(() => {
     if (selectedItem && !readState[selectedItem.id]) {
-      console.log(`set read state when item is selected`);
       setReadState({
         ...readState,
         [selectedItem.id]: true,

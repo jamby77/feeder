@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import DOMPurify from "dompurify";
 import Author from "@/app/feeds/item/author";
 import Category from "@/app/feeds/item/category";
@@ -21,6 +21,7 @@ export const FeedDetailsItem = ({
   const description = getFeedItemContent(item);
   const content = DOMPurify.sanitize(description, { FORBID_TAGS: ["iframe"] });
   const title = DOMPurify.sanitize(item.title);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const { setSelectedItem, config } = useAppContext();
   const { prev, next } = useMemo(() => {
     if (!config) {
@@ -49,11 +50,20 @@ export const FeedDetailsItem = ({
     markRead(item);
     toggleRead(item); // will it work?
   }, [item, toggleRead]);
+  useEffect(() => {
+    if (!scrollRef.current) {
+      return;
+    }
+    scrollRef.current.scroll({ top: 0, behavior: "smooth" });
+  }, [item]);
   const { nextItem, prevItem, feeds } = useAppContext();
   const feed = useMemo(() => feeds?.find(f => f.id === item.feedId), [item.feedId, feeds]);
   return (
     <div className="absolute bottom-0 left-8 right-0 top-0 place-content-center overflow-hidden overflow-y-auto rounded-l-2xl border-l-2 bg-white md:left-48 dark:border-gray-900 dark:bg-gray-600">
-      <div className="mx-auto flex h-full max-w-lg flex-col overflow-hidden overflow-y-scroll bg-gray-50 px-4 pb-12 md:max-w-2xl lg:max-w-4xl dark:bg-gray-700">
+      <div
+        ref={scrollRef}
+        className="mx-auto flex h-full max-w-lg flex-col overflow-hidden overflow-y-scroll bg-gray-50 px-4 pb-12 md:max-w-2xl lg:max-w-4xl dark:bg-gray-700"
+      >
         <div className="sticky top-0 bg-gray-50 pb-4 pt-12 dark:bg-gray-700" title={item.title}>
           <a
             href={item.link}
