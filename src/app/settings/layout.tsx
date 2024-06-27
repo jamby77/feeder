@@ -13,7 +13,7 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <div className="flex">
+    <div className="flex h-full w-full flex-1">
       <SettingsNav />
       {children}
     </div>
