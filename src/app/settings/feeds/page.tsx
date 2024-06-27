@@ -1,5 +1,5 @@
 import FeedsFilters from "@/app/settings/feeds/feeds-filters";
-import { FeedsList } from "@/app/settings/feeds/feeds-list";
+import FeedsList from "@/app/settings/feeds/feeds-list";
 import FeedsTitle from "@/app/settings/feeds/feeds-title";
 
 const SettingsFeedsPage = () => {
