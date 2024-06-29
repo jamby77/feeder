@@ -1,6 +1,6 @@
 "use client";
 
-import { CaretSortIcon, ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons";
+import { CaretSortIcon, Pencil2Icon } from "@radix-ui/react-icons";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -13,6 +13,7 @@ import {
 } from "@tanstack/react-table";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useMemo, useState } from "react";
+import { FeedItemDeleteAlert } from "@/app/settings/feeds/feed-item-delete-alert";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -104,6 +105,28 @@ const columns: ColumnDef<FeedCol>[] = [
     cell: ({ row }) => {
       const feed = row.original;
       return <div className="text-right">{feed.itemsUnread}</div>;
+    },
+  },
+  {
+    accessorKey: "id",
+    header: () => {
+      return (
+        <div>
+          <div className="flex-1">Actions</div>
+        </div>
+      );
+    },
+    cell: ({ row }) => {
+      const feed = row.original;
+      const id = feed.id;
+      return (
+        <div className="flex gap-4">
+          <FeedItemDeleteAlert feedId={id} />
+          <Button variant="ghost" className="m-0 p-0" title="Edit feed">
+            {<Pencil2Icon className="h-5 w-5" />}
+          </Button>
+        </div>
+      );
     },
   },
 ];
