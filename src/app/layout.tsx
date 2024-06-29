@@ -4,7 +4,7 @@ import "./globals.css";
 import { ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
 import { TopNavBar } from "@/app/topNavBar";
-import { AppContextProvider } from "@/context/AppContext";
+import { AppContextProvider } from "@/context/app-context";
 
 const inter = Inter({ subsets: ["latin"] });
 

@@ -1,7 +1,7 @@
 "use client";
 
 import toast from "react-hot-toast";
-import { useAppContext } from "@/context/AppContext";
+import { useAppContext } from "@/context/app-context";
 import { markAllRead } from "@/lib/db";
 import { Category } from "@/types";
 

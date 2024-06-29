@@ -123,7 +123,7 @@ const columns: ColumnDef<FeedCol>[] = [
         <div className="flex gap-4">
           <FeedItemDeleteAlert feedId={id} />
           <Button variant="ghost" className="m-0 p-0" title="Edit feed">
-            {<Pencil2Icon className="h-5 w-5" />}
+            <Pencil2Icon className="h-5 w-5" />
           </Button>
         </div>
       );

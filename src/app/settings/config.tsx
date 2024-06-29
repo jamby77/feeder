@@ -3,7 +3,7 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import Shortcut from "@/app/settings/shortcut";
-import { useAppContext } from "@/context/AppContext";
+import { useAppContext } from "@/context/app-context";
 import { updateConfig } from "@/lib/db";
 import { AppConfig, Shortcut as ShortcutType } from "@/types";
 

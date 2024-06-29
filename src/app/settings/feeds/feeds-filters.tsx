@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useAppContext } from "@/context/AppContext";
+import { useAppContext } from "@/context/app-context";
 
 export const FeedsFilters = ({}) => {
   const { categories } = useAppContext();

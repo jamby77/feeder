@@ -17,7 +17,7 @@ export function FeedItemDeleteAlert({ feedId }: { feedId: string }) {
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button variant="ghost" className="m-0 p-0" title="Remove feed">
-          {<TrashIcon className="h-5 w-5" />}
+          <TrashIcon className="h-5 w-5" />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

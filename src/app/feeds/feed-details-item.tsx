@@ -6,7 +6,7 @@ import Category from "@/app/feeds/item/category";
 import FeedItemImage from "@/app/feeds/item/feedItemImage";
 import PubDate from "@/app/feeds/item/pub-date";
 import ShortcutHint from "@/app/feeds/shortcut-hint";
-import { useAppContext } from "@/context/AppContext";
+import { useAppContext } from "@/context/app-context";
 import { Command } from "@/lib/commands";
 import { markRead } from "@/lib/db";
 import { getFeedItemContent } from "@/lib/feeds";
