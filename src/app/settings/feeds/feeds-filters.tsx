@@ -1,5 +1,6 @@
 "use client";
 
+import { useLiveQuery } from "dexie-react-hooks";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -11,11 +12,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useAppContext } from "@/context/app-context";
 import { useSettingsFeedsContext } from "@/context/settings-feeds-context";
+import { getCategories } from "@/lib/db";
 
 export const FeedsFilters = ({}) => {
-  const { categories } = useAppContext();
+  const categories = useLiveQuery(getCategories);
   const { categoryFilter, filterByCategory, searchFeedName } = useSettingsFeedsContext();
   return (
     <div className="flex w-full items-start justify-between gap-6">

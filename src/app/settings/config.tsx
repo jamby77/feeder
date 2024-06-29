@@ -1,10 +1,10 @@
 "use client";
 
+import { useLiveQuery } from "dexie-react-hooks";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import Shortcut from "@/app/settings/shortcut";
-import { useAppContext } from "@/context/app-context";
-import { updateConfig } from "@/lib/db";
+import { getConfig, updateConfig } from "@/lib/db";
 import { AppConfig, Shortcut as ShortcutType } from "@/types";
 
 const handleSubmit = (e: FormEvent<HTMLFormElement>, config: AppConfig) => {
@@ -36,7 +36,7 @@ const handleSubmit = (e: FormEvent<HTMLFormElement>, config: AppConfig) => {
 };
 
 export const Config = ({}) => {
-  const { config } = useAppContext();
+  const config = useLiveQuery(getConfig);
 
   const [idxState, setIdxState] = useState(0);
 

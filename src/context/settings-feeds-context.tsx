@@ -27,7 +27,7 @@ const defaultValue: SettingsFeedsContextType = {
   setFeedToEdit(id: string): void {},
   setFeedToRemove(id: string): void {},
   filterByCategory(category: string): void {},
-  searchFeedName(category: string): void {},
+  searchFeedName(search: string): void {},
   columns: [],
   data: [],
   feeds: [],

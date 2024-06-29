@@ -83,6 +83,8 @@ async function fetchFeeds(feeds: Feed[], refreshInterval: number = 10) {
   return json;
 }
 
+const skipTags = ["input", "textarea"];
+
 export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   // currently viewed item
   const [selectedItem, setSelectedItem] = useState<FeedItem | undefined>(undefined);
@@ -221,9 +223,10 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
         shortcuts.forEach(sc => {
           if (command[sc.command]) {
             eventListeners.push(function (e: KeyboardEvent) {
-              e.preventDefault();
-              const { key, isComposing, isTrusted } = e;
+              const { key, isComposing, isTrusted, target } = e;
+              const { tagName } = target as HTMLElement;
               if (
+                skipTags.includes(tagName.toLowerCase()) ||
                 !isTrusted ||
                 isComposing ||
                 key !== sc.key ||
@@ -234,6 +237,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
               ) {
                 return;
               }
+              e.preventDefault();
               toast(<span style={{ textTransform: "capitalize" }}>running command: {sc.title}</span>, {
                 duration: 1000,
               });
