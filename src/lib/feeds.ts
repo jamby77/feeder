@@ -108,14 +108,39 @@ function buildFeedItem(feedId: string, item: Record<string, any>): FeedItem {
   }
   return feedItem;
 }
+function extractFeedItems(doc: Record<string, any>) {
+  let itemsNodes = doc?.rss?.channel?.item ?? doc?.rdf?.channel?.item;
+  if (!itemsNodes) {
+    itemsNodes = doc?.feed?.entry;
+  }
+  return itemsNodes;
+}
 
 export async function getFeedItems(feedUrl: string) {
   const xml = await fetchFeedContent(feedUrl);
 
   const doc = parseFeedXml(xml);
-  let itemsNodes = doc?.rss?.channel?.item ?? doc?.rdf?.channel?.item;
-  if (!itemsNodes) {
-    itemsNodes = doc?.feed?.entry;
-  }
+  let itemsNodes = extractFeedItems(doc);
   return itemsNodes.map((item: Record<string, any>) => buildFeedItem(feedUrl, item));
+}
+
+function getFeedTitle(doc: Record<string, any>): string {
+  return doc?.rss?.channel?.title || doc?.rdf?.channel?.title || doc?.feed?.title || "";
+}
+
+function getHtmlUrl(doc: Record<string, any>) {
+  return doc?.rss?.channel?.link || doc?.rdf?.channel?.link || doc?.feed?.link || "";
+}
+
+export async function getFeedDetails(feedUrl: string) {
+  const xml = await fetchFeedContent(feedUrl);
+
+  const doc = parseFeedXml(xml);
+  const itemsNodes = extractFeedItems(doc);
+  return {
+    title: getFeedTitle(doc),
+    xmlUrl: feedUrl,
+    htmlUrl: getHtmlUrl(doc),
+    items: itemsNodes.map((item: Record<string, any>) => buildFeedItem(feedUrl, item)),
+  };
 }

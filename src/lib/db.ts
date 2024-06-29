@@ -52,6 +52,10 @@ export async function setup() {
   }
 }
 
+export async function addFeed(feed: Feed) {
+  return db.feeds.add(feed, feed.id);
+}
+
 export function updateConfig(config: AppConfig) {
   db.config.update(config.id, { ...config });
 }
