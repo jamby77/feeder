@@ -11,8 +11,10 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { useSettingsFeedsContext } from "@/context/settings-feeds-context";
 
 export function FeedItemDeleteAlert({ feedId }: { feedId: string }) {
+  const { setFeedToRemove } = useSettingsFeedsContext();
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -24,13 +26,18 @@ export function FeedItemDeleteAlert({ feedId }: { feedId: string }) {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently remove your account and remove your data from our
-            servers.
+            This action cannot be undone. This will permanently remove the feed from your subscription list.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <AlertDialogAction
+            onClick={() => {
+              setFeedToRemove(feedId);
+            }}
+          >
+            Remove
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

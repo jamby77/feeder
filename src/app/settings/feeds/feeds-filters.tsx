@@ -12,14 +12,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAppContext } from "@/context/app-context";
+import { useSettingsFeedsContext } from "@/context/settings-feeds-context";
 
 export const FeedsFilters = ({}) => {
   const { categories } = useAppContext();
+  const { categoryFilter, filterByCategory, searchFeedName } = useSettingsFeedsContext();
   return (
     <div className="flex w-full items-start justify-between gap-6">
       <div className="flex flex-1 flex-col gap-2">
         <Label htmlFor="category">Category</Label>
-        <Select>
+        <Select value={categoryFilter} onValueChange={filterByCategory}>
           <SelectTrigger name="category" className="w-full" id="category">
             <SelectValue placeholder="Filter by category" />
           </SelectTrigger>
@@ -40,7 +42,14 @@ export const FeedsFilters = ({}) => {
         <Label htmlFor="feed-name" className="">
           Feed Name
         </Label>
-        <Input type="search" name="feed-name" id="feed-name" className="rounded" placeholder="Filter Feeds..." />
+        <Input
+          onInput={e => searchFeedName(e.currentTarget.value)}
+          type="search"
+          name="feed-name"
+          id="feed-name"
+          className="rounded"
+          placeholder="Filter Feeds..."
+        />
       </div>
     </div>
   );

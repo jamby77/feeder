@@ -3,19 +3,35 @@
 import { CaretSortIcon, Pencil2Icon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import { useLiveQuery } from "dexie-react-hooks";
-import { createContext, ReactNode, useContext, useMemo } from "react";
+import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from "react";
 import { FeedItemDeleteAlert } from "@/app/settings/feeds/feed-item-delete-alert";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { db, getTotalCount, getTotalFeedCount, getTotalFeedUnreadCount, getTotalUnreadCount } from "@/lib/db";
+import { Feed } from "@/types";
 
 type SettingsFeedsContextType = {
   columns: ColumnDef<FeedItem>[];
   data: FeedItem[];
+  feeds: Feed[];
+  currentFeedAction: FeedActions;
+  currentFeedId?: string;
+  categoryFilter?: string;
+  setFeedToEdit: (id: string) => void;
+  setFeedToRemove: (id: string) => void;
+  filterByCategory: (category: string) => void;
+  searchFeedName: (search: string) => void;
 };
 const defaultValue: SettingsFeedsContextType = {
+  currentFeedAction: "none",
+  setFeedToEdit(id: string): void {},
+  setFeedToRemove(id: string): void {},
+  filterByCategory(category: string): void {},
+  searchFeedName(category: string): void {},
   columns: [],
   data: [],
+  feeds: [],
+  currentFeedId: undefined,
 };
 const SettingsFeedsContext = createContext<SettingsFeedsContextType>(defaultValue);
 
@@ -109,7 +125,7 @@ const columns: ColumnDef<FeedItem>[] = [
     },
   },
   {
-    accessorKey: "id",
+    accessorKey: "actions",
     header: () => {
       return (
         <div>
@@ -132,8 +148,9 @@ const columns: ColumnDef<FeedItem>[] = [
   },
 ];
 
+type FeedActions = "add" | "edit" | "delete" | "none";
 export const SettingsFeedsContextProvider = ({ children }: { children: ReactNode }) => {
-  const feeds = useLiveQuery(() => db.feeds.toArray());
+  const feeds = useLiveQuery(() => db.feeds.toArray(), [], [] as Feed[]);
   const counts = useLiveQuery(
     async () => {
       if (!feeds) {
@@ -156,27 +173,73 @@ export const SettingsFeedsContextProvider = ({ children }: { children: ReactNode
     [feeds],
     [],
   );
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [searchText, setSearchText] = useState("");
 
   const data = useMemo(() => {
     if (!feeds || !Array.isArray(counts) || counts.length === 0) {
       return [];
     }
-    return feeds.map(feed => {
-      const feedCounts = counts?.find(c => c.id === feed.id);
-      return {
-        id: feed.id,
-        title: feed.title,
-        items: feedCounts?.count || 0,
-        itemsUnread: feedCounts?.unread || 0,
-        categories: feed.categories,
-      };
-    });
-  }, [counts, feeds]);
+    return feeds
+      .filter(feed => {
+        if (categoryFilter && categoryFilter !== "all" && feed.categories?.indexOf(categoryFilter) === -1) {
+          return false;
+        }
+        return !(searchText && feed.title.toLowerCase().indexOf(searchText.toLowerCase()) === -1);
+      })
+      .map(feed => {
+        const feedCounts = counts?.find(c => c.id === feed.id);
+        return {
+          id: feed.id,
+          title: feed.title,
+          items: feedCounts?.count || 0,
+          itemsUnread: feedCounts?.unread || 0,
+          categories: feed.categories,
+        };
+      });
+  }, [counts, feeds, categoryFilter, searchText]);
+
+  const [currentFeedId, setCurrentFeedId] = useState("");
+  const [currentFeedAction, setCurrentFeedAction] = useState<FeedActions>("none");
+  const setFeedToRemove = useCallback(
+    (id: string) => {
+      setCurrentFeedId(id);
+      setCurrentFeedAction("delete");
+    },
+    [setCurrentFeedId, setCurrentFeedAction],
+  );
+  const setFeedToEdit = useCallback(
+    (id: string) => {
+      setCurrentFeedId(id);
+      setCurrentFeedAction("edit");
+    },
+    [setCurrentFeedId, setCurrentFeedAction],
+  );
+  const filterByCategory = useCallback(
+    (category: string) => {
+      setCategoryFilter(category);
+    },
+    [setCategoryFilter],
+  );
+  const searchFeedName = useCallback(
+    (search: string) => {
+      setSearchText(search);
+    },
+    [setSearchText],
+  );
   return (
     <SettingsFeedsContext.Provider
       value={{
         columns,
+        currentFeedAction,
+        currentFeedId,
         data,
+        setFeedToEdit,
+        setFeedToRemove,
+        feeds,
+        filterByCategory,
+        categoryFilter,
+        searchFeedName,
       }}
     >
       {children}

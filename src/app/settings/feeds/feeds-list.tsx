@@ -18,7 +18,7 @@ const FeedsList = () => {
   const [rowSelection, setRowSelection] = useState({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const { data, columns } = useSettingsFeedsContext();
-  console.log({ data, columns });
+
   const { getHeaderGroups, getRowModel } = useReactTable({
     data,
     columns,
@@ -52,13 +52,15 @@ const FeedsList = () => {
         </TableHeader>
         <TableBody>
           {getRowModel().rows?.length ? (
-            getRowModel().rows.map(row => (
-              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                {row.getVisibleCells().map(cell => (
-                  <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                ))}
-              </TableRow>
-            ))
+            getRowModel().rows.map(row => {
+              return (
+                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                  {row.getVisibleCells().map(cell => (
+                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                  ))}
+                </TableRow>
+              );
+            })
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">

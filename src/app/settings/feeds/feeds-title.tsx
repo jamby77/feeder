@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useAppContext } from "@/context/app-context";
+import { useSettingsFeedsContext } from "@/context/settings-feeds-context";
 
 export const FeedsTitle = ({}) => {
-  const { feeds } = useAppContext();
+  const { feeds } = useSettingsFeedsContext();
   return (
     <div className="flex w-full items-start justify-between">
       <div className="flex flex-col gap-2">
