@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { addFeed, db } from "@/lib/db";
+import { validateFeed } from "@/lib/validation";
 import { Feed } from "@/types";
 
 const AddFeedsPage = ({}) => {
@@ -38,11 +39,13 @@ const AddFeedsPage = ({}) => {
       }
     });
     data.id = data.xmlUrl;
-    data.lastUpdated = new Date();
-    console.log({ data });
-    // todo, validate with zod
-
-    await addFeed(data as Feed);
+    const [validData, errors] = validateFeed(data);
+    console.log({ validData });
+    if (!validData) {
+      toast.error(errors?.formErrors.join("\n") || "Validation error");
+      return;
+    }
+    await addFeed(validData as Feed);
     if (!details.items) {
       toast.success("Feed added successfully");
       return;
