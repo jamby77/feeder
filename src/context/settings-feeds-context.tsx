@@ -1,12 +1,11 @@
 "use client";
 
-import { CaretSortIcon, Pencil2Icon } from "@radix-ui/react-icons";
+import { CaretSortIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import { useLiveQuery } from "dexie-react-hooks";
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from "react";
 import { FeedItemDeleteAlert } from "@/app/settings/feeds/feed-item-delete-alert";
-import { FeedItemEditButton } from "@/app/settings/feeds/feed-item-edit-button";
-import { Button } from "@/components/ui/button";
+import { FeedItemEditDialog } from "@/app/settings/feeds/feed-item-edit-dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { db, getTotalCount, getTotalFeedCount, getTotalFeedUnreadCount, getTotalUnreadCount } from "@/lib/db";
 import { Feed } from "@/types";
@@ -15,18 +14,12 @@ type SettingsFeedsContextType = {
   columns: ColumnDef<FeedItem>[];
   data: FeedItem[];
   feeds: Feed[];
-  currentFeedAction: FeedActions;
   currentFeedId?: string;
   categoryFilter?: string;
-  setFeedToEdit: (id: string) => void;
-  setFeedToRemove: (id: string) => void;
   filterByCategory: (category: string) => void;
   searchFeedName: (search: string) => void;
 };
 const defaultValue: SettingsFeedsContextType = {
-  currentFeedAction: "none",
-  setFeedToEdit(id: string): void {},
-  setFeedToRemove(id: string): void {},
   filterByCategory(category: string): void {},
   searchFeedName(search: string): void {},
   columns: [],
@@ -70,6 +63,7 @@ const columns: ColumnDef<FeedItem>[] = [
     },
     enableSorting: false,
     enableHiding: false,
+    enableResizing: false,
   },
   {
     accessorKey: "title",
@@ -90,7 +84,9 @@ const columns: ColumnDef<FeedItem>[] = [
     },
   },
   {
+    size: 150,
     accessorKey: "items",
+    enableResizing: false,
     header: ({ column }) => {
       return (
         <div
@@ -108,6 +104,8 @@ const columns: ColumnDef<FeedItem>[] = [
     },
   },
   {
+    size: 110,
+    enableResizing: false,
     accessorKey: "itemsUnread",
     header: ({ column }) => {
       return (
@@ -127,27 +125,23 @@ const columns: ColumnDef<FeedItem>[] = [
   },
   {
     accessorKey: "actions",
+    size: 110,
     header: () => {
-      return (
-        <div>
-          <div className="flex-1">Actions</div>
-        </div>
-      );
+      return <div className="pr-2 text-right">Actions</div>;
     },
     cell: ({ row }) => {
       const feed = row.original;
       const id = feed.id;
       return (
-        <div className="flex gap-4">
+        <div className="flex justify-end gap-4">
           <FeedItemDeleteAlert feedId={id} />
-          <FeedItemEditButton feedId={id} />
+          <FeedItemEditDialog feedId={id} />
         </div>
       );
     },
   },
 ];
 
-type FeedActions = "add" | "edit" | "delete" | "none";
 export const SettingsFeedsContextProvider = ({ children }: { children: ReactNode }) => {
   const feeds = useLiveQuery(() => db.feeds.toArray(), [], [] as Feed[]);
   const counts = useLiveQuery(
@@ -198,22 +192,6 @@ export const SettingsFeedsContextProvider = ({ children }: { children: ReactNode
       });
   }, [counts, feeds, categoryFilter, searchText]);
 
-  const [currentFeedId, setCurrentFeedId] = useState("");
-  const [currentFeedAction, setCurrentFeedAction] = useState<FeedActions>("none");
-  const setFeedToRemove = useCallback(
-    (id: string) => {
-      setCurrentFeedId(id);
-      setCurrentFeedAction("delete");
-    },
-    [setCurrentFeedId, setCurrentFeedAction],
-  );
-  const setFeedToEdit = useCallback(
-    (id: string) => {
-      setCurrentFeedId(id);
-      setCurrentFeedAction("edit");
-    },
-    [setCurrentFeedId, setCurrentFeedAction],
-  );
   const filterByCategory = useCallback(
     (category: string) => {
       setCategoryFilter(category);
@@ -230,11 +208,7 @@ export const SettingsFeedsContextProvider = ({ children }: { children: ReactNode
     <SettingsFeedsContext.Provider
       value={{
         columns,
-        currentFeedAction,
-        currentFeedId,
         data,
-        setFeedToEdit,
-        setFeedToRemove,
         feeds,
         filterByCategory,
         categoryFilter,

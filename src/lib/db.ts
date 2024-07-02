@@ -56,6 +56,13 @@ export async function setup() {
 export async function addFeed(feed: Feed) {
   return db.feeds.add(feed, feed.id);
 }
+export async function updatedFeed(feed: Feed) {
+  return db.feeds.put(feed, feed.id);
+}
+
+export async function deleteFeed(feedId: string) {
+  return db.feeds.delete(feedId);
+}
 
 export function updateConfig(config: AppConfig) {
   db.config.update(config.id, { ...config });
@@ -75,6 +82,10 @@ export function markUnread(item: FeedItem) {
   db.feedItems.update(item.id, { isRead: false });
 }
 
+export async function getFeedItem(itemId: string) {
+  return db.feedItems.get(itemId);
+}
+
 export async function setFeedItems(
   feeds: {
     url: string;
@@ -89,7 +100,7 @@ export async function setFeedItems(
         if (!item.id) {
           continue;
         }
-        const existingItem = await db.feedItems.get(item.id);
+        const existingItem = await getFeedItem(item.id);
         if (existingItem) {
           continue;
         }

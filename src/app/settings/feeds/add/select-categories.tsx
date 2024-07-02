@@ -7,15 +7,13 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { getCategories } from "@/lib/db";
 
-export const SelectCategories = ({}) => {
+export const SelectCategories = ({ selectedCategories = [] }: { selectedCategories?: string[] }) => {
   const categories = useLiveQuery(getCategories);
-  const [checked, setChecked] = useState<string[]>([]);
+  const [checked, setChecked] = useState<string[]>(selectedCategories);
   if (!categories) {
     return null;
   }

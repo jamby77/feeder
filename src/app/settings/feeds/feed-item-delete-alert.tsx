@@ -11,10 +11,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { useSettingsFeedsContext } from "@/context/settings-feeds-context";
+import { deleteFeed } from "@/lib/db";
 
 export function FeedItemDeleteAlert({ feedId }: { feedId: string }) {
-  const { setFeedToRemove } = useSettingsFeedsContext();
+  const handleDeleteConfirm = () => {
+    deleteFeed(feedId);
+  };
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -31,13 +33,7 @@ export function FeedItemDeleteAlert({ feedId }: { feedId: string }) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={() => {
-              setFeedToRemove(feedId);
-            }}
-          >
-            Remove
-          </AlertDialogAction>
+          <AlertDialogAction onClick={handleDeleteConfirm}>Remove</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

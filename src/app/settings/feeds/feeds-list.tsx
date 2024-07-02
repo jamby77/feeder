@@ -34,6 +34,7 @@ const FeedsList = () => {
       rowSelection,
     },
   });
+  const sizableColumns = ["actions", "items", "itemsUnread"];
   return (
     <div className="rounded-md border">
       <Table>
@@ -41,8 +42,14 @@ const FeedsList = () => {
           {getHeaderGroups().map(headerGroup => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map(header => {
+                console.log({ header });
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    style={{
+                      width: sizableColumns.includes(header.id) ? header.getSize() : "auto",
+                    }}
+                  >
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 );
