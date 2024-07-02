@@ -192,6 +192,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     },
     [selectedItem],
   );
+
   const refreshInterval = config?.refreshInterval;
   const refreshFeeds = useCallback(async () => {
     if (!feeds) {
