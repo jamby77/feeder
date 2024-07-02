@@ -4,6 +4,7 @@ import DOMPurify from "dompurify";
 import FeedItemImage from "@/app/feeds/item/feedItemImage";
 import PubDate from "@/app/feeds/item/pub-date";
 import { getFeedItemContent } from "@/lib/feeds";
+import { cn } from "@/lib/utils";
 import { FeedItem } from "@/types";
 
 export const FeedListItem = ({
@@ -31,7 +32,10 @@ export const FeedListItem = ({
     <li
       onClick={handleSelect}
       onFocus={handleSelect}
-      className={`w-full max-w-96 cursor-pointer rounded border p-1 md:max-w-6xl md:px-4 md:py-2 dark:border-gray-900 ${!itemIsRead ? "" : "bg-gray-100 opacity-50 dark:bg-gray-700"}`}
+      className={cn(
+        "w-full max-w-96 cursor-pointer rounded border p-1 md:max-w-6xl md:px-4 md:py-2 dark:border-gray-900",
+        { "bg-gray-100 opacity-50 dark:bg-gray-700": itemIsRead },
+      )}
     >
       <div className="flex flex-nowrap items-start justify-between gap-2">
         <a
@@ -54,7 +58,7 @@ export const FeedListItem = ({
       <div className="meta text-sm text-gray-400">
         <PubDate item={item} />
       </div>
-      <FeedItemImage item={item} />
+      <FeedItemImage item={item} size="small" />
       <div
         className="prose prose-stone mt-4 max-h-[500px] w-full overflow-hidden overflow-y-scroll dark:prose-invert"
         dangerouslySetInnerHTML={{ __html: content }}

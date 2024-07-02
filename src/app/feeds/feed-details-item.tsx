@@ -75,7 +75,7 @@ export const FeedDetailsItem = ({
     return () => {
       document.removeEventListener("click", onOutsideClickListener);
     };
-  }, []);
+  }, [onOutsideClickListener]);
   const { nextItem, prevItem, feeds } = useAppContext();
   const feed = useMemo(() => feeds?.find(f => f.id === item.feedId), [item.feedId, feeds]);
   return (
@@ -105,7 +105,7 @@ export const FeedDetailsItem = ({
             from {feed?.title}
           </div>
         </div>
-        <FeedItemImage item={item} />
+        <FeedItemImage item={item} size="large" />
         <div
           className="prose prose-xl prose-stone mt-4 max-h-[500px] w-full dark:prose-invert"
           dangerouslySetInnerHTML={{ __html: content }}
