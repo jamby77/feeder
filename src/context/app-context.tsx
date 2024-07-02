@@ -64,23 +64,29 @@ async function fetchFeeds(feeds: Feed[], refreshInterval: number = 10) {
     }
     feedUrls.push(feed.xmlUrl);
   }
-  // fetch all feeds from backend, because of CORS issues
-  const response = await fetch(`/api/feed`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ url: feedUrls }),
-  });
-  if (!response.ok) {
-    throw new Error(`Failed to fetch feeds: ${response.status}`);
+  try {
+    // fetch all feeds from backend, because of CORS issues
+    const response = await fetch(`/api/feed`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ url: feedUrls }),
+    });
+    if (!response.ok) {
+      console.error(`Failed to fetch feeds: ${response.status}`);
+      return [];
+    }
+    const json = (await response.json()) as {
+      url: string;
+      items: FeedItem[];
+    }[];
+    await setFeedItems(json, now);
+    return json;
+  } catch (e) {
+    console.error(e);
   }
-  const json = (await response.json()) as {
-    url: string;
-    items: FeedItem[];
-  }[];
-  await setFeedItems(json, now);
-  return json;
+  return [];
 }
 
 const skipTags = ["input", "textarea"];
@@ -136,6 +142,9 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     let index = 0;
     if (selectedItem) {
       index = sessionItems.findIndex(item => item.id === selectedItem.id);
+    } else {
+      setSelectedItem(sessionItems[0]);
+      return;
     }
     if (index >= 0 && index < sessionItems.length - 1) {
       setSelectedItem(sessionItems[index + 1]);
