@@ -86,6 +86,9 @@ export async function setFeedItems(
     for (const feed of feeds) {
       db.feeds.update(feed.url, { lastUpdated: now });
       for (const item of feed.items) {
+        if (!item.id) {
+          continue;
+        }
         const existingItem = await db.feedItems.get(item.id);
         if (existingItem) {
           continue;

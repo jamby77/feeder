@@ -3,9 +3,22 @@ POST {{host}}/api/feed
 Content-Type: application/json
 
 {
-    "url": [
-      "https://vercel.com/atom"
-    ]
+  "url": [
+    "https://akrabat.com/feed/",
+    "https://blog.jetbrains.com/phpstorm/feed/",
+    "https://blog.jetbrains.com/webstorm/feed/",
+    "https://www.moreto.net/rss/lastnews.xml",
+    "https://www.phparch.com/phpa.rss",
+    "http://www.phpdeveloper.org/feed",
+    "https://blog.jetbrains.com/go/feed/",
+    "https://developers.google.com/web/fundamentals/feed.xml",
+    "https://react.dev/rss.xml",
+    "https://stolica.bg/rss.xml",
+    "https://tailwindcss.com/feeds/feed.xml",
+    "https://vercel.com/atom",
+    "https://www.apple-bg.com/index.php?type=rss;action=.xml",
+    "https://www.engadget.com/rss.xml"
+  ]
 }
 
 ###

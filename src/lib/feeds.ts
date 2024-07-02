@@ -91,7 +91,7 @@ function buildFeedItem(feedId: string, item: Record<string, any>): FeedItem {
   const description = getFeedItemContent(item);
   let link = getItemUrl(item);
   const pubDate = getFeedItemDate(item);
-  const [feedItem, error] = validateFeedItem({
+  const data = {
     id: link,
     feedId,
     title,
@@ -100,10 +100,12 @@ function buildFeedItem(feedId: string, item: Record<string, any>): FeedItem {
     link,
     image,
     isRead: false,
-  });
+  };
+
+  const [feedItem, error] = validateFeedItem(data);
 
   if (error || !feedItem) {
-    console.error(error);
+    console.error({ error: JSON.stringify(error, null, 2), data });
     return {} as FeedItem;
   }
   for (const field in item) {
