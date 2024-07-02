@@ -1,5 +1,6 @@
 import Dexie, { Collection, InsertType, type EntityTable } from "dexie";
 import { Command } from "@/lib/commands";
+import { validateFeedItem } from "@/lib/validation";
 import { AppConfig, Category, Feed, FeedItem } from "@/types";
 import data from "../mockData/data.json";
 
@@ -85,13 +86,16 @@ export async function setFeedItems(
     for (const feed of feeds) {
       db.feeds.update(feed.url, { lastUpdated: now });
       for (const item of feed.items) {
-        // todo: update feeds in db for last update date
         const existingItem = await db.feedItems.get(item.id);
         if (existingItem) {
           continue;
         }
-
-        db.feedItems.add(item);
+        const [feedItem, errors] = validateFeedItem(item, true);
+        if (!feedItem) {
+          console.error(errors);
+          continue;
+        }
+        db.feedItems.add(feedItem);
       }
     }
   }

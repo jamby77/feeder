@@ -1,4 +1,4 @@
-import { ExternalLinkIcon } from "@radix-ui/react-icons";
+import { Cross2Icon, ExternalLinkIcon } from "@radix-ui/react-icons";
 import { useEffect, useMemo, useRef } from "react";
 import DOMPurify from "dompurify";
 import Author from "@/app/feeds/item/author";
@@ -96,7 +96,9 @@ export const FeedDetailsItem = ({
           setSelectedItem(undefined);
         }}
       >
-        <span className="inline-block h-6 w-6 text-2xl">❌</span>
+        <span className="inline-block h-6 w-6 text-2xl">
+          <Cross2Icon className="h-6 w-6" />
+        </span>
       </button>
       <div className="absolute left-12 top-1/2 flex flex-col items-center">
         <button

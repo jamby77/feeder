@@ -1,4 +1,5 @@
 import { X2jOptions, XMLParser } from "fast-xml-parser";
+import { validateFeedItem } from "@/lib/validation";
 import { FeedItem } from "@/types";
 
 export function getItemUrl(item: Record<string, any>) {
@@ -90,7 +91,7 @@ function buildFeedItem(feedId: string, item: Record<string, any>): FeedItem {
   const description = getFeedItemContent(item);
   let link = getItemUrl(item);
   const pubDate = getFeedItemDate(item);
-  const feedItem = {
+  const [feedItem, error] = validateFeedItem({
     id: link,
     feedId,
     title,
@@ -99,13 +100,19 @@ function buildFeedItem(feedId: string, item: Record<string, any>): FeedItem {
     link,
     image,
     isRead: false,
-  };
+  });
+
+  if (error || !feedItem) {
+    console.error(error);
+    return {} as FeedItem;
+  }
   for (const field in item) {
     if (!(field in feedItem)) {
       // @ts-ignore
       feedItem[field as string] = item[field];
     }
   }
+
   return feedItem;
 }
 function extractFeedItems(doc: Record<string, any>) {

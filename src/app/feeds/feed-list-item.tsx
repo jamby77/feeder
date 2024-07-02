@@ -1,6 +1,8 @@
+import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import { useCallback } from "react";
 import DOMPurify from "dompurify";
 import FeedItemImage from "@/app/feeds/item/feedItemImage";
+import PubDate from "@/app/feeds/item/pub-date";
 import { getFeedItemContent } from "@/lib/feeds";
 import { FeedItem } from "@/types";
 
@@ -46,8 +48,11 @@ export const FeedListItem = ({
             toggleRead?.(item);
           }}
         >
-          {itemIsRead ? "☑️" : "✅"}
+          {itemIsRead ? <EyeClosedIcon className="h-6 w-6" /> : <EyeOpenIcon className="h-6 w-6" />}
         </button>
+      </div>
+      <div className="meta text-sm text-gray-400">
+        <PubDate item={item} />
       </div>
       <FeedItemImage item={item} />
       <div

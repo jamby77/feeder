@@ -8,9 +8,8 @@ export const PubDate = ({ item }: { item: FeedItem }) => {
   if (!item.pubDate) {
     return null;
   }
-  const date = new Date(item.pubDate);
-  const dateStr = dayjs(date).fromNow();
-  return <div className="text-sm">published {dateStr}</div>;
+  const dateStr = dayjs(item.pubDate).fromNow();
+  return <div className="text-sm">{dateStr}</div>;
 };
 
 export default PubDate;

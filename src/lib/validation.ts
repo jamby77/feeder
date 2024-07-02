@@ -11,12 +11,36 @@ export const feedSchema = z.object({
   type: z.string().optional().default("rss"),
 });
 
+export const feedItemSchema = z.object({
+  id: z.string().url(),
+  feedId: z.string().url(),
+  link: z.string().url(),
+  url: z.string().url().optional(),
+  title: z.string().min(1, { message: "Title is required" }),
+  description: z.string().min(1, { message: "Title is required" }),
+  image: z.string().url().optional(),
+  isRead: z.boolean().default(false),
+  pubDate: z.coerce.date(),
+});
+
 type FeedData = z.infer<typeof feedSchema>;
+type FeedItemData = z.infer<typeof feedItemSchema>;
 
 export function validateFeed(
   feed: Record<string, any>,
 ): [FeedData | null, typeToFlattenedError<FeedData, string> | null] {
   const parsed = feedSchema.safeParse(feed);
+  if (!parsed.success) {
+    return [null, parsed.error.flatten()];
+  }
+  return [parsed.data, null];
+}
+
+export function validateFeedItem(
+  feedItem: Record<string, any>,
+  passTrough: boolean = false,
+): [FeedItemData | null, typeToFlattenedError<FeedItemData, string> | null] {
+  const parsed = passTrough ? feedItemSchema.passthrough().safeParse(feedItem) : feedItemSchema.safeParse(feedItem);
   if (!parsed.success) {
     return [null, parsed.error.flatten()];
   }
