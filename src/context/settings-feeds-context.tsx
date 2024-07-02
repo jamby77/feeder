@@ -5,6 +5,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { useLiveQuery } from "dexie-react-hooks";
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from "react";
 import { FeedItemDeleteAlert } from "@/app/settings/feeds/feed-item-delete-alert";
+import { FeedItemEditButton } from "@/app/settings/feeds/feed-item-edit-button";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { db, getTotalCount, getTotalFeedCount, getTotalFeedUnreadCount, getTotalUnreadCount } from "@/lib/db";
@@ -139,9 +140,7 @@ const columns: ColumnDef<FeedItem>[] = [
       return (
         <div className="flex gap-4">
           <FeedItemDeleteAlert feedId={id} />
-          <Button variant="ghost" className="m-0 p-0" title="Edit feed">
-            <Pencil2Icon className="h-5 w-5" />
-          </Button>
+          <FeedItemEditButton feedId={id} />
         </div>
       );
     },
