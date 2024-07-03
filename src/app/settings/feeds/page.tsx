@@ -1,7 +1,12 @@
+import { Metadata } from "next";
 import FeedsFilters from "@/app/settings/feeds/feeds-filters";
 import FeedsList from "@/app/settings/feeds/feeds-list";
 import FeedsTitle from "@/app/settings/feeds/feeds-title";
 import { SettingsFeedsContextProvider } from "@/context/settings-feeds-context";
+
+export const metadata: Metadata = {
+  title: "Feeds",
+};
 
 const SettingsFeedsPage = () => {
   return (

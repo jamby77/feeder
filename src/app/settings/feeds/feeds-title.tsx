@@ -1,5 +1,6 @@
 "use client";
 
+import { EnterIcon, ExitIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { useSettingsFeedsContext } from "@/context/settings-feeds-context";
 
@@ -35,10 +36,11 @@ export const FeedsTitle = ({}) => {
           </svg>
         </Link>{" "}
         <Link href="/settings/feeds/import" className="px-2 py-2 dark:border-gray-300">
-          Import OPML
-        </Link>{" "}
+          <EnterIcon className="mr-2 inline-block h-4 w-4" />
+          <span className="inline-block">Import</span>
+        </Link>
         <Link href="/settings/feeds/export" className="px-2 py-2 dark:border-gray-300">
-          Export OPML
+          <span className="inline-block">Export</span> <ExitIcon className="mr-2 inline-block h-4 w-4" />
         </Link>
       </div>
     </div>

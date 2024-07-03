@@ -1,36 +1,18 @@
-"use client";
+import { Metadata } from "next";
+import Export from "@/app/settings/feeds/export/export";
 
-import { useLiveQuery } from "dexie-react-hooks";
-import { useMemo } from "react";
-import ExportLink from "@/app/settings/feeds/export/export-link";
-import { buildFeedsExportCSV } from "@/lib/csv";
-import { db } from "@/lib/db";
-import { buildFeedsExportData, buildFeedsOPMLXml } from "@/lib/feeds";
-import { Feed } from "@/types";
+export const metadata: Metadata = {
+  title: "Export feeds",
+};
 
 const ExportFeedsPage = ({}) => {
-  const feeds = useLiveQuery(() => db.feeds.toArray(), [], [] as Feed[]);
-  const xml = useMemo(() => buildFeedsOPMLXml(feeds), [feeds]);
-  const json = useMemo(() => buildFeedsExportData(feeds), [feeds]);
-  const csv = useMemo(() => buildFeedsExportCSV(feeds), [feeds]);
   return (
-    <div>
-      <h2 className="text-3xl text-gray-900 dark:text-gray-300">Export</h2>
-      <div className="my-4 grid grid-cols-2 gap-4 md:my-6 md:gap-6">
-        <ExportLink fileName="feeds.opml.xml" href={`data:text/xml;charset=utf-8,${encodeURIComponent(xml)}`}>
-          .opml
-        </ExportLink>
-        <ExportLink
-          fileName="feeds.json"
-          href={`data:application/json;charset=utf-8,${encodeURIComponent(JSON.stringify(json))}`}
-        >
-          .json
-        </ExportLink>
-        <ExportLink fileName="feeds.csv" href={`data:text/csv;charset=utf-8,${encodeURIComponent(csv)}`}>
-          .csv
-        </ExportLink>
+    <main className="container w-full">
+      <div className="mx-auto h-full w-full p-4 md:max-w-4xl">
+        <h1 className="text-3xl text-gray-900 dark:text-gray-300">Export</h1>
+        <Export />
       </div>
-    </div>
+    </main>
   );
 };
 

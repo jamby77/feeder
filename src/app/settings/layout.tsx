@@ -3,7 +3,10 @@ import type { Metadata } from "next";
 import SettingsNav from "@/app/settings/settings-nav";
 
 export const metadata: Metadata = {
-  title: "Feeder - Settings",
+  title: {
+    default: "Feeder - Settings",
+    template: "%s | Feeder - Settings",
+  },
   description: "RSS Feed Reader",
 };
 

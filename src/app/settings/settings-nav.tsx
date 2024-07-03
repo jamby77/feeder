@@ -9,7 +9,7 @@ export const SettingsNav = () => {
   return (
     <nav role="navigation" className="w-64 overflow-auto overscroll-contain py-6">
       <ul role="menu" className="flex min-w-fit flex-col gap-2 text-sm font-medium leading-[14px] text-gray-900">
-        <MenuItem href="/settings">
+        <MenuItem href="/settings/config">
           <MenuItemIcon>
             <svg
               className="pointer-events-none block h-full w-full"
