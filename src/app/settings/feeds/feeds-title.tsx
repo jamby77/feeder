@@ -13,7 +13,7 @@ export const FeedsTitle = ({}) => {
         <p className="text-gray-600 dark:text-gray-300">Following {feeds?.length} feeds</p>
       </div>
       <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-        <Link title="Add Feed" href="/settings/feeds/add" className="py-2 dark:border-gray-300">
+        <Link title="Add Feed" href={`/settings/feeds/add`} className="py-2 dark:border-gray-300">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" className="">
             <path
               fill="currentColor"
@@ -35,11 +35,11 @@ export const FeedsTitle = ({}) => {
             ></path>
           </svg>
         </Link>{" "}
-        <Link href="/settings/feeds/import" className="px-2 py-2 dark:border-gray-300">
+        <Link href={`/settings/feeds/import`} className="px-2 py-2 dark:border-gray-300">
           <EnterIcon className="mr-2 inline-block h-4 w-4" />
           <span className="inline-block">Import</span>
         </Link>
-        <Link href="/settings/feeds/export" className="px-2 py-2 dark:border-gray-300">
+        <Link href={`/settings/feeds/export`} className="px-2 py-2 dark:border-gray-300">
           <span className="inline-block">Export</span> <ExitIcon className="mr-2 inline-block h-4 w-4" />
         </Link>
       </div>

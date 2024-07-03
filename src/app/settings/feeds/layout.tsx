@@ -1,7 +1,5 @@
 import { ReactNode } from "react";
-import type { Metadata } from "next";
 import Breadcrumbs from "@/app/settings/feeds/breadcrumbs";
-import SettingsNav from "@/app/settings/settings-nav";
 
 export default function RootLayout({
   children,
