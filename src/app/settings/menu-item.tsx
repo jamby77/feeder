@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 
 export const MenuItem = ({ href, children }: { href: string; children: ReactNode }) => {
   const pathname = usePathname();
-  console.log({ pathname, href });
   const selected = pathname.startsWith(href);
 
   return (

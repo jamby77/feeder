@@ -63,39 +63,41 @@ const AddFeedsPage = ({}) => {
 
   return (
     <main className="container w-full">
-      <h1 className="py-4 text-4xl uppercase">Add feed</h1>
-      <form onSubmit={handleSubmit} className="my-6 flex max-w-lg flex-col gap-4" name="add-feed">
-        <input type="hidden" name="type" id="type" defaultValue="rss" />
-        <div>
-          <Label htmlFor="xmlUrl">Feed Url*</Label>
-          <Input
-            type="text"
-            name="xmlUrl"
-            id="xmlUrl"
-            placeholder="Feed Url"
-            onBlur={e => fetchFeedDetails(e.currentTarget.value)}
-          />
-        </div>
-        <div className="flex items-center">
-          <SelectCategories />
-        </div>
-        {details.title && (
+      <div className="mx-auto h-full w-full p-4 md:max-w-4xl">
+        <h1 className="py-4 text-3xl uppercase">Add feed</h1>
+        <form onSubmit={handleSubmit} className="my-6 flex max-w-lg flex-col gap-4" name="add-feed">
+          <input type="hidden" name="type" id="type" defaultValue="rss" />
           <div>
-            <Label htmlFor="title">Title</Label>
-            <Input readOnly type="text" name="title" id="title" defaultValue={details.title} />
-            <input type="hidden" name="text" id="text" defaultValue={details.title} />
+            <Label htmlFor="xmlUrl">Feed Url*</Label>
+            <Input
+              type="text"
+              name="xmlUrl"
+              id="xmlUrl"
+              placeholder="Feed Url"
+              onBlur={e => fetchFeedDetails(e.currentTarget.value)}
+            />
           </div>
-        )}
-        {details.htmlUrl && (
-          <div>
-            <Label htmlFor="title">Web Url</Label>
-            <Input readOnly type="text" name="htmlUrl" id="htmlUrl" defaultValue={details.htmlUrl} />
+          <div className="flex items-center">
+            <SelectCategories />
           </div>
-        )}
-        <Button type="submit" variant="outline" disabled={!isValid}>
-          Add
-        </Button>
-      </form>
+          {details.title && (
+            <div>
+              <Label htmlFor="title">Title</Label>
+              <Input readOnly type="text" name="title" id="title" defaultValue={details.title} />
+              <input type="hidden" name="text" id="text" defaultValue={details.title} />
+            </div>
+          )}
+          {details.htmlUrl && (
+            <div>
+              <Label htmlFor="title">Web Url</Label>
+              <Input readOnly type="text" name="htmlUrl" id="htmlUrl" defaultValue={details.htmlUrl} />
+            </div>
+          )}
+          <Button type="submit" variant="outline" disabled={!isValid}>
+            Add
+          </Button>
+        </form>
+      </div>
     </main>
   );
 };
