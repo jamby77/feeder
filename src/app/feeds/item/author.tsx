@@ -1,3 +1,4 @@
+import { Small } from "@/components/typography/typography";
 import { FeedItem } from "@/types";
 
 export const Author = ({ item }: { item: FeedItem }) => {
@@ -14,7 +15,7 @@ export const Author = ({ item }: { item: FeedItem }) => {
     return null;
   }
 
-  return <div className="text-sm">by {author}</div>;
+  return <Small>by {author}</Small>;
 };
 
 export default Author;

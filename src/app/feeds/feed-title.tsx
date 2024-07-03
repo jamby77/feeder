@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import { H1 } from "@/components/typography/typography";
 import { useAppContext } from "@/context/app-context";
 
 export const FeedTitle = () => {
   const { feed } = useAppContext();
   return (
-    <h1 className="truncate p-2 text-left text-4xl text-gray-900 md:px-16 md:py-4 dark:text-gray-300">
+    <H1 className="truncate p-2 md:px-16 md:py-4">
       <Link href="/">{feed?.title || "Feeder"}</Link>
-    </h1>
+    </H1>
   );
 };
 

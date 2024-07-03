@@ -6,6 +6,7 @@ import Category from "@/app/feeds/item/category";
 import FeedItemImage from "@/app/feeds/item/feedItemImage";
 import PubDate from "@/app/feeds/item/pub-date";
 import ShortcutHint from "@/app/feeds/shortcut-hint";
+import { Lead, Small } from "@/components/typography/typography";
 import { useAppContext } from "@/context/app-context";
 import { Command } from "@/lib/commands";
 import { markRead } from "@/lib/db";
@@ -81,33 +82,33 @@ export const FeedDetailsItem = ({
   return (
     <div
       ref={selfRef}
-      className="absolute bottom-0 left-8 right-0 top-0 place-content-center overflow-hidden overflow-y-auto rounded-l-2xl border-l-2 bg-white md:left-48 dark:border-gray-900 dark:bg-gray-600"
+      className="absolute bottom-0 left-8 right-0 top-0 place-content-center overflow-hidden overflow-y-auto rounded-l-2xl border-l-4 bg-background md:left-48"
     >
       <div
         ref={scrollRef}
-        className="mx-auto flex h-full max-w-lg flex-col overflow-hidden overflow-y-scroll bg-gray-50 px-4 pb-12 md:max-w-2xl lg:max-w-4xl dark:bg-gray-700"
+        className="mx-auto flex h-full max-w-lg flex-col overflow-hidden overflow-y-scroll bg-muted px-4 pb-12 md:max-w-2xl lg:max-w-4xl"
       >
-        <div className="sticky top-0 bg-gray-50 pb-4 pt-12 dark:bg-gray-700" title={item.title}>
+        <div className="sticky top-0 mb-4 border-b-2 bg-muted/70 pb-4 pt-12 backdrop-blur" title={item.title}>
           <a
             href={item.link}
             target="_blank"
-            className="inline-flex w-full items-center justify-start gap-4 text-lg uppercase hover:underline dark:text-slate-100"
+            className="inline-flex w-full items-center justify-start gap-4 text-lg uppercase text-foreground hover:underline"
           >
             <ExternalLinkIcon className="h-6 w-6" />
-            <span className="inline-block max-w-[90%] truncate" dangerouslySetInnerHTML={{ __html: title }} />
+            <Lead className="inline-block max-w-[90%] truncate" dangerouslySetInnerHTML={{ __html: title }} />
           </a>
         </div>
-        <div className="meta text-sm text-gray-400">
+        <div className="space-y-1.5 text-muted-foreground">
           <PubDate item={item} />
           <Author item={item} />
           <Category item={item} />
-          <div className="w-full max-w-96 truncate text-sm" title={item.feedId}>
+          <Small className="w-full max-w-96 truncate" title={item.feedId}>
             in {feed?.title}
-          </div>
+          </Small>
         </div>
         <FeedItemImage item={item} size="large" />
         <div
-          className="prose prose-xl prose-stone mt-4 max-h-[500px] w-full dark:prose-invert"
+          className="prose prose-xl prose-stone mb-16 mt-4 w-full dark:prose-invert"
           dangerouslySetInnerHTML={{ __html: content }}
         />
       </div>

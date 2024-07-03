@@ -1,17 +1,19 @@
 import { ReactNode } from "react";
 import { MenuItem } from "@/app/settings/menu-item";
+import { Small } from "@/components/typography/typography";
 
 const MenuItemIcon = ({ children }: { children: ReactNode }) => {
-  return <div className="pointer-events-none me-5 h-5 w-5 flex-shrink-0 align-top text-gray-700">{children}</div>;
+  return <div className="pointer-events-none me-5 h-5 w-5 flex-shrink-0 align-top">{children}</div>;
 };
 
 export const SettingsNav = () => {
   return (
-    <nav role="navigation" className="w-64 overflow-auto overscroll-contain py-6">
-      <ul role="menu" className="flex min-w-fit flex-col gap-2 text-sm font-medium leading-[14px] text-gray-900">
+    <nav role="navigation" className="w-64 shrink-0 overflow-auto overscroll-contain py-6">
+      <ul role="menu" className="flex min-w-fit flex-col gap-2 font-medium leading-3 text-foreground">
         <MenuItem href="/settings/config">
           <MenuItemIcon>
             <svg
+              fill="currentColor"
               className="pointer-events-none block h-full w-full"
               viewBox="0 -960 960 960"
               preserveAspectRatio="xMidYMid meet"
@@ -22,11 +24,12 @@ export const SettingsNav = () => {
               </g>
             </svg>
           </MenuItemIcon>
-          Config
+          <Small>Config</Small>
         </MenuItem>
         <MenuItem href="/settings/feeds">
           <MenuItemIcon>
             <svg
+              fill="currentColor"
               className="pointer-events-none block h-full w-full"
               viewBox="0 -960 960 960"
               preserveAspectRatio="xMidYMid meet"
@@ -37,7 +40,7 @@ export const SettingsNav = () => {
               </g>
             </svg>
           </MenuItemIcon>
-          Feeds
+          <Small>Feeds</Small>
         </MenuItem>
       </ul>
     </nav>

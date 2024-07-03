@@ -1,7 +1,7 @@
-import { H1 } from "@/components/typography/typography";
+import { H2 } from "@/components/typography/typography";
 
 export const PageTitle = ({ title }: { title: string }) => {
-  return <H1 className="capitalize">{title}</H1>;
+  return <H2 className="capitalize">{title}</H2>;
 };
 
 export default PageTitle;

@@ -4,7 +4,10 @@ export interface HeadingProps extends React.InputHTMLAttributes<HTMLHeadingEleme
 
 export const H1 = ({ children, className, ...rest }: HeadingProps) => {
   return (
-    <h1 className={cn("scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl", className)} {...rest}>
+    <h1
+      className={cn("scroll-m-20 text-4xl font-extrabold tracking-tight text-foreground lg:text-5xl", className)}
+      {...rest}
+    >
       {children}
     </h1>
   );

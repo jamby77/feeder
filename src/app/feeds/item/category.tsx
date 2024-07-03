@@ -1,3 +1,4 @@
+import { Small } from "@/components/typography/typography";
 import { FeedItem } from "@/types";
 
 export const Category = ({ item }: { item: FeedItem }) => {
@@ -9,9 +10,9 @@ export const Category = ({ item }: { item: FeedItem }) => {
     category = category.join(", ");
   }
   return (
-    <div className="w-full max-w-96 truncate text-sm" title={category}>
+    <Small className="w-full max-w-96 truncate" title={category}>
       in {category}
-    </div>
+    </Small>
   );
 };
 

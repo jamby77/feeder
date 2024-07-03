@@ -3,6 +3,8 @@ import { useCallback } from "react";
 import DOMPurify from "dompurify";
 import FeedItemImage from "@/app/feeds/item/feedItemImage";
 import PubDate from "@/app/feeds/item/pub-date";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getFeedItemContent } from "@/lib/feeds";
 import { cn } from "@/lib/utils";
 import { FeedItem } from "@/types";
@@ -29,40 +31,37 @@ export const FeedListItem = ({
     return onSelect?.(item);
   }, [onSelect, item]);
   return (
-    <li
-      onClick={handleSelect}
-      onFocus={handleSelect}
-      className={cn(
-        "w-full max-w-96 cursor-pointer rounded border p-1 md:max-w-6xl md:px-4 md:py-2 dark:border-gray-900",
-        { "bg-gray-100 opacity-50 dark:bg-gray-700": itemIsRead },
-      )}
-    >
-      <div className="flex flex-nowrap items-start justify-between gap-2">
-        <a
-          href={item.link}
-          target="_blank"
-          className="prose prose-stone text-lg font-bold uppercase dark:prose-invert hover:underline"
-        >
-          <span dangerouslySetInnerHTML={{ __html: title }} />
-        </a>
-        <button
-          className="h-10 w-10 appearance-none bg-none text-4xl"
-          type="button"
-          onClick={() => {
-            toggleRead?.(item);
-          }}
-        >
-          {itemIsRead ? <EyeClosedIcon className="h-6 w-6" /> : <EyeOpenIcon className="h-6 w-6" />}
-        </button>
-      </div>
-      <div className="meta text-sm text-gray-400">
-        <PubDate item={item} />
-      </div>
-      <FeedItemImage item={item} size="small" />
-      <div
-        className="prose prose-stone mt-4 max-h-[500px] w-full overflow-hidden overflow-y-scroll dark:prose-invert"
-        dangerouslySetInnerHTML={{ __html: content }}
-      />
+    <li onClick={handleSelect} onFocus={handleSelect}>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex grow flex-nowrap items-center justify-between">
+            <a href={item.link} target="_blank" className="uppercase hover:underline">
+              <span dangerouslySetInnerHTML={{ __html: title }} />
+            </a>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="appearance-none bg-none"
+              type="button"
+              onClick={() => {
+                toggleRead?.(item);
+              }}
+            >
+              {itemIsRead ? <EyeClosedIcon className="w-full" /> : <EyeOpenIcon className="w-full" />}
+            </Button>
+          </CardTitle>
+          <div className="text-muted-foreground">
+            <PubDate item={item} />
+          </div>
+        </CardHeader>
+        <CardContent>
+          <FeedItemImage item={item} size="small" />
+          <div
+            className="prose prose-stone mt-4 max-h-[500px] w-full overflow-hidden overflow-y-scroll dark:prose-invert"
+            dangerouslySetInnerHTML={{ __html: content }}
+          />
+        </CardContent>
+      </Card>
     </li>
   );
 };

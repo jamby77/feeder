@@ -3,7 +3,7 @@
 import { EnterIcon, ExitIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import PageTitle from "@/components/page-title";
-import { Large, Small } from "@/components/typography/typography";
+import { Large, Muted, Small } from "@/components/typography/typography";
 import { useSettingsFeedsContext } from "@/context/settings-feeds-context";
 
 export const FeedsTitle = ({}) => {
@@ -12,7 +12,7 @@ export const FeedsTitle = ({}) => {
     <div className="flex w-full items-start justify-between">
       <div className="flex flex-col gap-2">
         <PageTitle title="Organize Feeds" />
-        <Large>Following {feeds?.length} feeds</Large>
+        <Muted>Following {feeds?.length} feeds</Muted>
       </div>
       <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
         <Link title="Add Feed" href={`/settings/feeds/add`} className="py-2 dark:border-gray-300">
@@ -36,12 +36,12 @@ export const FeedsTitle = ({}) => {
               clipRule="evenodd"
             ></path>
           </svg>
-        </Link>{" "}
-        <Link href={`/settings/feeds/import`} className="px-2 py-2 dark:border-gray-300">
+        </Link>
+        <Link href={`/settings/feeds/import`} className="px-2 py-2">
           <EnterIcon className="mr-2 inline-block h-4 w-4" />
           <Small className="inline-block">Import</Small>
         </Link>
-        <Link href={`/settings/feeds/export`} className="px-2 py-2 dark:border-gray-300">
+        <Link href={`/settings/feeds/export`} className="px-2 py-2">
           <Small className="inline-block">Export</Small> <ExitIcon className="mr-2 inline-block h-4 w-4" />
         </Link>
       </div>
