@@ -77,7 +77,7 @@ export const FeedDetailsItem = ({
     };
   }, [onOutsideClickListener]);
   const { nextItem, prevItem, feeds } = useAppContext();
-  const feed = useMemo(() => feeds?.find(f => f.id === item.feedId), [item.feedId, feeds]);
+  const feed = useMemo(() => feeds?.find(f => f.xmlUrl === item.feedId), [item.feedId, feeds]);
   return (
     <div
       ref={selfRef}
@@ -102,7 +102,7 @@ export const FeedDetailsItem = ({
           <Author item={item} />
           <Category item={item} />
           <div className="w-full max-w-96 truncate text-sm" title={item.feedId}>
-            from {feed?.title}
+            in {feed?.title}
           </div>
         </div>
         <FeedItemImage item={item} size="large" />
