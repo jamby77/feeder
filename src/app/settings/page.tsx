@@ -1,13 +1,15 @@
 import { redirect } from "next/navigation";
-import Config from "@/app/settings/config";
+import Config from "@/app/settings/config/config";
+import PageContainer from "@/components/page-container";
+import PageTitle from "@/components/page-title";
 
 const SettingsPage = () => {
   redirect("/settings/config");
   return (
-    <main className="w-full px-4 md:px-6">
-      <h1 className="pb-6 text-2xl text-gray-900 dark:text-gray-300">Configuration</h1>
+    <PageContainer>
+      <PageTitle title="Configuration" />
       <Config />
-    </main>
+    </PageContainer>
   );
 };
 

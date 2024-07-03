@@ -1,9 +1,13 @@
 "use client";
 
+import { PlusIcon } from "@radix-ui/react-icons";
 import { useLiveQuery } from "dexie-react-hooks";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
-import Shortcut from "@/app/settings/shortcut";
+import Shortcut from "@/app/settings/config/shortcut";
+import FormCheckboxGroup from "@/components/form-checkbox-group";
+import FormInputGroup from "@/components/form-input-group";
+import { Button } from "@/components/ui/button";
 import { getConfig, updateConfig } from "@/lib/db";
 import { AppConfig, Shortcut as ShortcutType } from "@/types";
 
@@ -65,56 +69,44 @@ export const Config = ({}) => {
     shortcuts = [],
   } = config;
   return (
-    <div className="max-w-2xl text-gray-900 dark:text-gray-300">
+    <div className="mt-4 max-w-2xl text-gray-900 dark:text-gray-300">
       <form
         name="config-form"
         onSubmit={e => {
           toast.success("Config saved");
-
           handleSubmit(e, config);
         }}
       >
         <fieldset name="main" className="space-y-4 rounded-xl border-2 border-gray-700 p-4">
           <legend>Main</legend>
-          <div className="input group flex flex-col">
-            <label htmlFor="title">Title:</label>
-            <input className="dark:bg-gray-700" type="text" id="title" name="title" defaultValue={title} />
-          </div>
-          <div className="input group flex flex-col">
-            <label htmlFor="refreshInterval">Refresh Interval (in sec):</label>
-            <input
-              className="dark:bg-gray-700"
-              type="number"
-              id="refreshInterval"
-              name="refreshInterval"
-              defaultValue={refreshInterval}
-            />
-          </div>
-          <div className="input group flex flex-row gap-2">
-            <label htmlFor="newOnTop">New Items on Top:</label>
-            <input type="checkbox" id="newOnTop" name="newOnTop" defaultChecked={newOnTop} />
-          </div>
-          <div className="input group flex flex-row gap-2">
-            <label htmlFor="hideRead">Hide Read Items:</label>
-            <input type="checkbox" id="hideRead" name="hideRead" defaultChecked={hideRead} />
-          </div>
-          <div className="input group flex flex-row gap-2">
-            <label htmlFor="hideEmptyCategories">Hide Empty Categories:</label>
-            <input
-              type="checkbox"
-              id="hideEmptyCategories"
-              name="hideEmptyCategories"
-              defaultChecked={hideEmptyCategories}
-            />
-          </div>
-          <div className="input group flex flex-row gap-2">
-            <label htmlFor="hideEmptyFeeds">Hide Empty Feeds:</label>
-            <input type="checkbox" id="hideEmptyFeeds" name="hideEmptyFeeds" defaultChecked={hideEmptyFeeds} />
-          </div>
-          <div className="input group flex flex-row gap-2">
-            <label htmlFor="enableShortcuts">Enable Shortcuts:</label>
-            <input type="checkbox" id="enableShortcuts" name="enableShortcuts" defaultChecked={enableShortcuts} />
-          </div>
+          <FormInputGroup variant="default" value={title} id="title" name="title" label="Title" required />
+          <FormInputGroup
+            variant="default"
+            value={refreshInterval}
+            id="refreshInterval"
+            name="refreshInterval"
+            label="Refresh Interval (in sec)"
+          />
+          <FormCheckboxGroup id="newOnTop" name="newOnTop" label="New Items on Top" checked={newOnTop} />
+          <FormCheckboxGroup id="hideRead" name="hideRead" label="Hide Read Items" checked={hideRead} />
+          <FormCheckboxGroup
+            id="hideEmptyCategories"
+            name="hideEmptyCategories"
+            label="Hide Empty Categorie"
+            checked={hideEmptyCategories}
+          />
+          <FormCheckboxGroup
+            id="hideEmptyFeeds"
+            name="hideEmptyFeeds"
+            label="Hide Empty Feeds"
+            checked={hideEmptyFeeds}
+          />
+          <FormCheckboxGroup
+            id="enableShortcuts"
+            name="enableShortcuts"
+            label="Enable Shortcuts"
+            checked={enableShortcuts}
+          />
         </fieldset>
         <fieldset
           name="shortcuts"
@@ -141,31 +133,22 @@ export const Config = ({}) => {
             );
           })}
           <div>
-            <button
+            <Button
+              variant="link"
+              size="icon"
               type="button"
-              className="ml-auto block h-16 w-16 rounded-full bg-gray-500 px-3 text-blue-400 shadow-xl backdrop-blur"
+              className=""
               onClick={() => {
                 setIdxState(idxState => idxState + 1);
               }}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="40px"
-                viewBox="0 -960 960 960"
-                width="40px"
-                fill="currentColor"
-              >
-                <path d="M446.67-446.67H200v-66.66h246.67V-760h66.66v246.67H760v66.66H513.33V-200h-66.66v-246.67Z" />
-              </svg>
-            </button>
+              <PlusIcon className="h-full w-full" />
+            </Button>
           </div>
         </fieldset>
-        <button
-          type="submit"
-          className="mb-8 mt-4 w-full rounded-full border bg-green-500 px-2 py-1 text-gray-50 md:max-w-36 md:px-4 md:py-2 dark:bg-green-600"
-        >
+        <Button variant="default" type="submit" className="mt-4 bg-green-500 dark:bg-green-600">
           Save Config
-        </button>
+        </Button>
       </form>
     </div>
   );

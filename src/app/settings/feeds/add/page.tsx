@@ -3,6 +3,8 @@
 import { FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 import SelectCategories from "@/app/settings/feeds/add/select-categories";
+import PageContainer from "@/components/page-container";
+import PageTitle from "@/components/page-title";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -62,43 +64,41 @@ const AddFeedsPage = ({}) => {
   }
 
   return (
-    <main className="container w-full">
-      <div className="mx-auto h-full w-full p-4 md:max-w-4xl">
-        <h1 className="py-4 text-3xl uppercase">Add feed</h1>
-        <form onSubmit={handleSubmit} className="my-6 flex max-w-lg flex-col gap-4" name="add-feed">
-          <input type="hidden" name="type" id="type" defaultValue="rss" />
+    <PageContainer>
+      <PageTitle title="Add feed" />
+      <form onSubmit={handleSubmit} className="my-6 flex max-w-lg flex-col gap-4" name="add-feed">
+        <input type="hidden" name="type" id="type" defaultValue="rss" />
+        <div>
+          <Label htmlFor="xmlUrl">Feed Url*</Label>
+          <Input
+            type="text"
+            name="xmlUrl"
+            id="xmlUrl"
+            placeholder="Feed Url"
+            onBlur={e => fetchFeedDetails(e.currentTarget.value)}
+          />
+        </div>
+        <div className="flex items-center">
+          <SelectCategories />
+        </div>
+        {details.title && (
           <div>
-            <Label htmlFor="xmlUrl">Feed Url*</Label>
-            <Input
-              type="text"
-              name="xmlUrl"
-              id="xmlUrl"
-              placeholder="Feed Url"
-              onBlur={e => fetchFeedDetails(e.currentTarget.value)}
-            />
+            <Label htmlFor="title">Title</Label>
+            <Input readOnly type="text" name="title" id="title" defaultValue={details.title} />
+            <input type="hidden" name="text" id="text" defaultValue={details.title} />
           </div>
-          <div className="flex items-center">
-            <SelectCategories />
+        )}
+        {details.htmlUrl && (
+          <div>
+            <Label htmlFor="title">Web Url</Label>
+            <Input readOnly type="text" name="htmlUrl" id="htmlUrl" defaultValue={details.htmlUrl} />
           </div>
-          {details.title && (
-            <div>
-              <Label htmlFor="title">Title</Label>
-              <Input readOnly type="text" name="title" id="title" defaultValue={details.title} />
-              <input type="hidden" name="text" id="text" defaultValue={details.title} />
-            </div>
-          )}
-          {details.htmlUrl && (
-            <div>
-              <Label htmlFor="title">Web Url</Label>
-              <Input readOnly type="text" name="htmlUrl" id="htmlUrl" defaultValue={details.htmlUrl} />
-            </div>
-          )}
-          <Button type="submit" variant="outline" disabled={!isValid}>
-            Add
-          </Button>
-        </form>
-      </div>
-    </main>
+        )}
+        <Button type="submit" variant="outline" disabled={!isValid}>
+          Add
+        </Button>
+      </form>
+    </PageContainer>
   );
 };
 

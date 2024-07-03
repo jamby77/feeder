@@ -1,5 +1,7 @@
 import { Metadata } from "next";
 import Export from "@/app/settings/feeds/export/export";
+import PageContainer from "@/components/page-container";
+import PageTitle from "@/components/page-title";
 
 export const metadata: Metadata = {
   title: "Export feeds",
@@ -7,12 +9,10 @@ export const metadata: Metadata = {
 
 const ExportFeedsPage = ({}) => {
   return (
-    <main className="container w-full">
-      <div className="mx-auto h-full w-full p-4 md:max-w-4xl">
-        <h1 className="text-3xl text-gray-900 dark:text-gray-300">Export</h1>
-        <Export />
-      </div>
-    </main>
+    <PageContainer>
+      <PageTitle title="Export feeds" />
+      <Export />
+    </PageContainer>
   );
 };
 
