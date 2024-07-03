@@ -1,5 +1,7 @@
+import { H1 } from "@/components/typography/typography";
+
 export const PageTitle = ({ title }: { title: string }) => {
-  return <h1 className="text-3xl capitalize text-gray-900 dark:text-gray-300">{title}</h1>;
+  return <H1 className="capitalize">{title}</H1>;
 };
 
 export default PageTitle;

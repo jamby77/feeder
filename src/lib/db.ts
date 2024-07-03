@@ -122,7 +122,7 @@ export async function getFeeds() {
     feeds.map(async feed => {
       feed.items = await db.feedItems
         .where("feedId")
-        .equals(feed.id)
+        .equals(feed.xmlUrl)
         .filter(item => !item.isRead)
         .toArray();
     }),

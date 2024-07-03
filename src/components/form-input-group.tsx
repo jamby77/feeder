@@ -71,6 +71,7 @@ export const FormInputGroup = ({
         defaultValue={value}
         readOnly={readonly}
         disabled={disabled}
+        className={cn({ "cursor-not-allowed select-none": disabled || readonly })}
       />
     </div>
   );

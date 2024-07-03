@@ -11,7 +11,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { getCategories } from "@/lib/db";
 
-export const SelectCategories = ({ selectedCategories = [] }: { selectedCategories?: string[] }) => {
+export const SelectCategories = ({
+  selectedCategories = [],
+  disabled,
+}: {
+  selectedCategories?: string[];
+  disabled?: boolean;
+}) => {
   const categories = useLiveQuery(getCategories);
   const [checked, setChecked] = useState<string[]>(selectedCategories);
   if (!categories) {
@@ -21,7 +27,7 @@ export const SelectCategories = ({ selectedCategories = [] }: { selectedCategori
     <>
       <input type="hidden" name="categories" value={checked.join(",")} id="categories" />
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
+        <DropdownMenuTrigger asChild disabled={disabled}>
           <Button variant="ghost">Categories</Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="start">

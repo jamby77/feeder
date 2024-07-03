@@ -1,23 +1,31 @@
 "use client";
 
 import toast from "react-hot-toast";
+import { H3, H4 } from "@/components/typography/typography";
+import { Button } from "@/components/ui/button";
 import { useAppContext } from "@/context/app-context";
 import { markAllRead } from "@/lib/db";
+import { cn } from "@/lib/utils";
 import { Category } from "@/types";
 
 export const Sidebar = ({}) => {
   const { refreshFeeds, categories, feeds, setFeed, countAll, countCurrent, feed: currentFeed } = useAppContext();
   return (
-    <aside className="max-h-screen-top w-full max-w-96 overflow-hidden overflow-y-auto bg-gray-800 text-gray-300">
-      <div className="space-y-2">
-        <h2
-          className="inline-flex w-full cursor-pointer items-center justify-between gap-2 p-3 text-xl"
+    <aside className="flex h-screen max-h-screen-top w-full max-w-96 grow flex-col gap-2 overflow-hidden overflow-y-auto bg-muted text-foreground">
+      <div className="flex items-center pr-3">
+        <H3
+          className={cn("mt-3 flex-1 cursor-pointer p-3", {
+            "font-bold underline underline-offset-4": currentFeed === undefined,
+          })}
           onClick={() => setFeed(undefined)}
         >
-          <span className="inline-block flex-1">All {countAll ? `(${countAll})` : ""}</span>&nbsp;
-          <button
+          All {countAll ? `(${countAll})` : ""}
+        </H3>
+        <div className="flex shrink-0 grow-0 gap-2">
+          <Button
+            size="icon"
             title="Mark Read"
-            className="relative h-12 w-12 rounded-full bg-slate-700 px-3 hover:bg-slate-600"
+            className="relative rounded-full bg-background px-3 hover:bg-slate-600"
             onClick={() => {
               toast.success("All marked read", {});
               markAllRead();
@@ -35,10 +43,11 @@ export const Sidebar = ({}) => {
                 <path d="M268-240 42-466l57-56 170 170 56 56-57 56Zm226 0L268-466l56-57 170 170 368-368 56 57-424 424Zm0-226-57-56 198-198 57 56-198 198Z" />
               </svg>
             </span>
-          </button>
-          <button
+          </Button>
+          <Button
+            size="icon"
             title="Refresh"
-            className="relative h-12 w-12 rounded-full bg-slate-700 px-3 hover:bg-slate-600"
+            className="relative rounded-full bg-background px-3 hover:bg-slate-600"
             onClick={() => {
               toast.loading("Refreshing ...", { duration: 5000 });
               refreshFeeds();
@@ -56,56 +65,58 @@ export const Sidebar = ({}) => {
                 <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z" />
               </svg>
             </span>
-          </button>
-        </h2>
-
-        {categories &&
-          categories?.map((category: Category) => (
-            <div key={category.id} className="p-3">
-              <h2 className="text-xl">{category.title}</h2>
-              <ul className="space-y-4 pt-2">
-                {feeds
-                  ?.filter(feed => feed.categories && feed.categories.includes(category.id))
-                  .map(feed => {
-                    let itemsCount = feed.items?.length ?? 0;
-                    if (currentFeed?.id === feed.id && countCurrent) {
-                      itemsCount = countCurrent;
-                    }
-                    return (
-                      <li key={feed.id} className="ps-4">
-                        <a
-                          className="hover:text-gray-400"
-                          href={`/feeds?feed=${feed.id}&title=${feed.title}`}
-                          onClick={e => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setFeed(feed);
+          </Button>
+        </div>
+      </div>
+      {categories &&
+        categories?.map((category: Category) => (
+          <div key={category.id} className="p-3">
+            <H4 className="mt-2">{category.title}</H4>
+            <ul className="pt-2">
+              {feeds
+                ?.filter(feed => feed.categories && feed.categories.includes(category.id))
+                .map(feed => {
+                  let itemsCount = feed.items?.length ?? 0;
+                  if (currentFeed?.id === feed.id && countCurrent) {
+                    itemsCount = countCurrent;
+                  }
+                  return (
+                    <li key={feed.id} className="pl-4">
+                      <Button
+                        size="lg"
+                        variant="link"
+                        className={cn("m-0 h-8 p-0 px-0 py-0 hover:font-bold", {
+                          "font-bold underline": currentFeed?.id === feed.id,
+                        })}
+                        onClick={e => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setFeed(feed);
+                        }}
+                      >
+                        <span>{feed.title}</span>
+                        <span>{itemsCount ? ` (${itemsCount})` : ""}</span>
+                      </Button>
+                      {itemsCount ? (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="ml-2 rounded-full px-2 hover:outline"
+                          title="Mark Read"
+                          onClick={() => {
+                            toast.success(`${feed.title} marked read`, {});
+                            return markAllRead(feed.id);
                           }}
                         >
-                          <span className={`${currentFeed?.id === feed.id ? "font-bold underline" : ""}`}>
-                            {feed.title}
-                          </span>
-                          <span>{itemsCount ? ` (${itemsCount})` : ""}</span>
-                        </a>
-                        {itemsCount ? (
-                          <button
-                            className="ml-2 rounded-full px-2 hover:outline"
-                            title="Mark Read"
-                            onClick={() => {
-                              toast.success(`${feed.title} marked read`, {});
-                              return markAllRead(feed.id);
-                            }}
-                          >
-                            ✔
-                          </button>
-                        ) : null}
-                      </li>
-                    );
-                  })}
-              </ul>
-            </div>
-          ))}
-      </div>
+                          ✔
+                        </Button>
+                      ) : null}
+                    </li>
+                  );
+                })}
+            </ul>
+          </div>
+        ))}
     </aside>
   );
 };
