@@ -1,6 +1,6 @@
-import { X2jOptions, XMLParser } from "fast-xml-parser";
+import { X2jOptions, XMLBuilder, XMLParser } from "fast-xml-parser";
 import { validateFeedItem } from "@/lib/validation";
-import { FeedItem } from "@/types";
+import { Feed, FeedItem } from "@/types";
 
 export function getItemUrl(item: Record<string, any>) {
   const link = item.link || "";
@@ -61,6 +61,107 @@ function parseFeedXml(xml: string) {
   };
   const parser = new XMLParser(parserOptions);
   return parser.parse(xml);
+}
+
+export function buildFeedsExportData(feeds: Feed[]) {
+  const outline: Record<string, any> = {};
+
+  for (let { htmlUrl, title, xmlUrl, categories } of feeds) {
+    const outlineItem = {
+      type: "rss",
+      text: title,
+      title,
+      xmlUrl,
+      htmlUrl,
+    };
+    if (categories && categories.length > 0) {
+      for (let c of categories) {
+        if (!outline[c]) {
+          outline[c] = {
+            type: "category",
+            title: c,
+            text: c,
+            outline: [],
+          };
+        }
+        outline[c].outline.push(outlineItem);
+      }
+    } else {
+      outline[title] = outlineItem;
+    }
+  }
+
+  return {
+    head: {
+      title: "Feeder - Export",
+    },
+    body: {
+      outline: Object.values(outline),
+    },
+  };
+}
+
+export function buildFeedsOPMLXml(feeds: Feed[]) {
+  const options = {
+    ignoreAttributes: false,
+    allowBooleanAttributes: true,
+    suppressBooleanAttributes: true,
+    attributesGroupName: "__attributes",
+    format: true,
+    arrayNodeName: "outline",
+    suppressUnpairedNodes: false,
+  };
+  const builder = new XMLBuilder(options);
+  const outline: Record<string, any> = {};
+
+  for (let { htmlUrl, title, xmlUrl, categories } of feeds) {
+    const outlineItem = {
+      __attributes: {
+        type: "rss",
+        text: title,
+        title,
+        xmlUrl,
+        htmlUrl,
+      },
+    };
+    if (categories && categories.length > 0) {
+      for (let c of categories) {
+        if (!outline[c]) {
+          outline[c] = {
+            __attributes: {
+              title: c,
+              text: c,
+            },
+            outline: [],
+          };
+        }
+        outline[c].outline.push(outlineItem);
+      }
+    } else {
+      outline[title] = outlineItem;
+    }
+  }
+
+  const data = {
+    "?xml": {
+      __attributes: {
+        version: "1.0",
+        encoding: "UTF-8",
+      },
+    },
+    opml: {
+      __attributes: {
+        version: "1.1",
+      },
+      head: {
+        title: "Feeder - Export",
+      },
+      body: {
+        outline: Object.values(outline),
+      },
+    },
+  };
+  return builder.build(data);
 }
 
 function getFeedItemDate(item: Record<string, any>) {
