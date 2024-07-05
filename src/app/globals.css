@@ -33,9 +33,13 @@
 
     --ring: 215 20.2% 65.1%;
 
+    --app-primary: 36 77% 53%;
+    --app-primary-foreground: 43 75% 95%;
+    --app-secondary: 29 77% 40%;
+    --app-accent: 20 65% 29%;
+
     --radius: 0.5rem;
   }
-
 }
 
 @layer base {
@@ -91,6 +95,11 @@
     --destructive-foreground: 210 40% 98%;
 
     --ring: 216 34% 17%;
+
+    --app-primary: 20 65% 29%;
+    --app-primary-foreground: 43 77% 88%;
+    --app-secondary: 29 77% 40%;
+    --app-accent: 20 65% 29%;
 
     --radius: 0.5rem;
   }

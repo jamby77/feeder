@@ -1,7 +1,7 @@
 "use client";
 
 import toast from "react-hot-toast";
-import { H3, H4 } from "@/components/typography/typography";
+import { H3, H4, Small } from "@/components/typography/typography";
 import { Button } from "@/components/ui/button";
 import { useAppContext } from "@/context/app-context";
 import { markAllRead } from "@/lib/db";
@@ -11,7 +11,7 @@ import { Category } from "@/types";
 export const Sidebar = ({}) => {
   const { refreshFeeds, categories, feeds, setFeed, countAll, countCurrent, feed: currentFeed } = useAppContext();
   return (
-    <aside className="flex h-screen max-h-screen-top w-full max-w-96 grow flex-col gap-2 overflow-hidden overflow-y-auto bg-muted text-foreground">
+    <aside className="bg-app-secondary text-app-foreground flex h-screen max-h-screen-top w-full max-w-96 grow flex-col gap-2 overflow-hidden overflow-y-auto">
       <div className="flex items-center pr-3">
         <H3
           className={cn("mt-3 flex-1 cursor-pointer p-3", {
@@ -25,7 +25,7 @@ export const Sidebar = ({}) => {
           <Button
             size="icon"
             title="Mark Read"
-            className="relative rounded-full bg-background px-3 hover:bg-slate-600"
+            className="bg-app-accent hover:bg-app relative rounded-full px-3"
             onClick={() => {
               toast.success("All marked read", {});
               markAllRead();
@@ -47,7 +47,7 @@ export const Sidebar = ({}) => {
           <Button
             size="icon"
             title="Refresh"
-            className="relative rounded-full bg-background px-3 hover:bg-slate-600"
+            className="bg-app-accent hover:bg-app relative rounded-full px-3"
             onClick={() => {
               toast.loading("Refreshing ...", { duration: 5000 });
               refreshFeeds();
@@ -85,7 +85,7 @@ export const Sidebar = ({}) => {
                       <Button
                         size="lg"
                         variant="link"
-                        className={cn("m-0 h-8 p-0 px-0 py-0 hover:font-bold", {
+                        className={cn("text-app-foreground m-0 h-8 p-0 px-0 py-0 hover:font-bold", {
                           "font-bold underline": currentFeed?.id === feed.id,
                         })}
                         onClick={e => {
@@ -94,7 +94,7 @@ export const Sidebar = ({}) => {
                           setFeed(feed);
                         }}
                       >
-                        <span>{feed.title}</span>
+                        <Small>{feed.title}</Small>
                         <span>{itemsCount ? ` (${itemsCount})` : ""}</span>
                       </Button>
                       {itemsCount ? (
