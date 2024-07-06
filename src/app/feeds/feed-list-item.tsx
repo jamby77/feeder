@@ -32,7 +32,7 @@ export const FeedListItem = ({
   }, [onSelect, item]);
   return (
     <li onClick={handleSelect} onFocus={handleSelect}>
-      <Card>
+      <Card className={cn({ "opacity-50": itemIsRead })}>
         <CardHeader>
           <CardTitle className="flex grow flex-nowrap items-center justify-between">
             <a href={item.link} target="_blank" className="uppercase hover:underline">
