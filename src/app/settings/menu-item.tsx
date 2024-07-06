@@ -14,10 +14,10 @@ export const MenuItem = ({ href, children }: { href: string; children: ReactNode
       <Link
         href={href}
         className={cn(
-          "relative me-[2px] ms-px flex min-h-10 items-center overflow-hidden rounded-e-full py-2.5 pl-[23px] text-secondary-foreground",
+          "relative me-[2px] ms-px flex min-h-10 items-center overflow-hidden rounded-e-full py-1.5 pl-[23px] text-secondary-foreground transition-colors",
           {
-            "bg-blue-100 text-blue-700": selected,
-            "hover:bg-gray-200 hover:text-primary-foreground": !selected,
+            "bg-app-100 text-app-700": selected,
+            "hover:bg-app-600 hover:text-primary-foreground": !selected,
           },
         )}
       >

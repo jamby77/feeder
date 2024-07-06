@@ -31,8 +31,8 @@ export default function RootLayout({
                 duration: 2000,
                 style: {
                   padding: "10px 20px",
-                  color: "rgb(209 213 219)",
-                  backgroundColor: "rgb(31 41 55 )",
+                  color: "hsl(43 75% 95%)",
+                  backgroundColor: "hsl(20 65% 29%)",
                 },
               }}
             />
