@@ -1,10 +1,12 @@
 import Dexie, { Collection, InsertType, type EntityTable } from "dexie";
+import dexieCloud from "dexie-cloud-addon";
 import { Command } from "@/lib/commands";
 import { validateFeedItem } from "@/lib/validation";
 import { AppConfig, Category, Feed, FeedItem } from "@/types";
+import dexieCloudData from "../../dexie-cloud.json";
 import data from "../mockData/data.json";
 
-const db = new Dexie("FeederDatabase") as Dexie & {
+const db = new Dexie("FeederDatabase", { addons: [dexieCloud] }) as Dexie & {
   config: EntityTable<AppConfig, "id">;
   categories: EntityTable<
     Category,
@@ -16,10 +18,15 @@ const db = new Dexie("FeederDatabase") as Dexie & {
 
 // Schema declaration:
 db.version(2).stores({
-  config: "++id",
+  config: "@id",
   categories: "id", // primary key "id" (for the runtime!)
   feeds: "id, *categories, lastUpdated", // primary key "id" (for the runtime!)
   feedItems: "id, title, pubDate, isRead, feedId", // primary key "id" (for the runtime!)
+});
+
+db.cloud.configure({
+  databaseUrl: dexieCloudData.dbUrl,
+  nameSuffix: false,
 });
 
 export async function setup() {
