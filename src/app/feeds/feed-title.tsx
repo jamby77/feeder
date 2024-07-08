@@ -7,7 +7,7 @@ import { useAppContext } from "@/context/app-context";
 export const FeedTitle = () => {
   const { feed } = useAppContext();
   return (
-    <H1 className="truncate p-2 md:px-16 md:py-4">
+    <H1 className="truncate p-2 text-2xl font-semibold uppercase md:px-16 md:py-4 lg:text-3xl">
       <Link href="/">{feed?.title || "Feeder"}</Link>
     </H1>
   );
