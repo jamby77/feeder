@@ -1,10 +1,9 @@
 import Dexie, { Collection, InsertType, type EntityTable } from "dexie";
 import dexieCloud from "dexie-cloud-addon";
-import { Command } from "@/lib/commands";
 import { validateFeedItem } from "@/lib/validation";
 import { AppConfig, Category, Feed, FeedItem } from "@/types";
-import dexieCloudData from "../../dexie-cloud.json";
-import data from "../mockData/data.json";
+
+// import data from "../mockData/data.json";
 
 const db = new Dexie("FeederDatabase", { addons: [dexieCloud] }) as Dexie & {
   config: EntityTable<AppConfig, "id">;
@@ -25,40 +24,40 @@ db.version(2).stores({
 });
 
 db.cloud.configure({
-  databaseUrl: dexieCloudData.dbUrl,
+  databaseUrl: process.env.DEXIE_CLOUD_DB_URL as string,
   nameSuffix: false,
 });
 
-export async function setup() {
-  const existingCategories = await db.categories.toArray();
-  const existingFeeds = await db.feeds.toArray();
-  const existingConfig = await db.config.toArray();
-
-  const { categories, items, ...config } = data;
-  console.log({ existingCategories, existingFeeds, existingConfig });
-  console.log({ config, categories, items });
-  if (!existingCategories.length) {
-    db.categories.bulkPut(categories);
-  }
-  if (!existingFeeds.length) {
-    db.feeds.bulkPut(items);
-  }
-  if (!existingConfig.length) {
-    const appConfig = {
-      ...config,
-      id: 1,
-      shortcuts: config.shortcuts.map(shortcut => ({
-        altKey: false,
-        ctrlKey: false,
-        metaKey: false,
-        shiftKey: false,
-        ...shortcut,
-        command: shortcut.command as Command,
-      })),
-    };
-    db.config.put(appConfig);
-  }
-}
+// export async function setup() {
+//   const existingCategories = await db.categories.toArray();
+//   const existingFeeds = await db.feeds.toArray();
+//   const existingConfig = await db.config.toArray();
+//
+//   const { categories, items, ...config } = data;
+//   console.log({ existingCategories, existingFeeds, existingConfig });
+//   console.log({ config, categories, items });
+//   if (!existingCategories.length) {
+//     db.categories.bulkPut(categories);
+//   }
+//   if (!existingFeeds.length) {
+//     db.feeds.bulkPut(items);
+//   }
+//   if (!existingConfig.length) {
+//     const appConfig = {
+//       ...config,
+//       id: 1,
+//       shortcuts: config.shortcuts.map(shortcut => ({
+//         altKey: false,
+//         ctrlKey: false,
+//         metaKey: false,
+//         shiftKey: false,
+//         ...shortcut,
+//         command: shortcut.command as Command,
+//       })),
+//     };
+//     db.config.put(appConfig);
+//   }
+// }
 
 export async function addFeed(feed: Feed) {
   return db.feeds.add(feed, feed.id);
