@@ -24,7 +24,7 @@ db.version(2).stores({
 });
 
 db.cloud.configure({
-  databaseUrl: process.env.DEXIE_CLOUD_DB_URL as string,
+  databaseUrl: process.env.NEXT_PUBLIC_DEXIE_CLOUD_DB_URL as string,
   nameSuffix: false,
 });
 
