@@ -28,6 +28,8 @@ db.cloud.configure({
   nameSuffix: false,
 });
 
+db.cloud.sync();
+
 // export async function setup() {
 //   const existingCategories = await db.categories.toArray();
 //   const existingFeeds = await db.feeds.toArray();
