@@ -23,12 +23,16 @@ db.version(2).stores({
   feedItems: "id, title, pubDate, isRead, feedId", // primary key "id" (for the runtime!)
 });
 
+const databaseUrl = process.env.NEXT_PUBLIC_DEXIE_CLOUD_DB_URL as string;
+console.log({ databaseUrl });
 db.cloud.configure({
-  databaseUrl: process.env.NEXT_PUBLIC_DEXIE_CLOUD_DB_URL as string,
+  databaseUrl,
   nameSuffix: false,
 });
 
-db.cloud.sync();
+if (typeof window !== "undefined" && window.indexedDB) {
+  db.cloud.sync();
+}
 
 // export async function setup() {
 //   const existingCategories = await db.categories.toArray();
