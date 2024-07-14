@@ -21,6 +21,7 @@ export interface AppConfig {
   enableShortcuts: boolean;
   shortcuts: Shortcut[];
 }
+export const booleanFields = ["enableShortcuts", "hideEmptyCategories", "hideEmptyFeeds", "hideRead", "newOnTop"];
 
 export interface AppConfigExpanded {
   id: string;

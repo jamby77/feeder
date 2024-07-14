@@ -40,7 +40,6 @@ export function FeedItemEditDialog({ feedId }: { feedId: string }) {
     });
     data.id = feedId;
     const [validData, errors] = validateFeed(data);
-    console.log({ validData });
     if (!validData) {
       toast.error(errors?.formErrors.join("\n") || "Validation error");
       return;

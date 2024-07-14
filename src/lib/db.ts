@@ -26,17 +26,13 @@ db.version(10).stores({
 });
 
 const databaseUrl = process.env.NEXT_PUBLIC_DEXIE_CLOUD_DB_URL as string;
-console.log({ databaseUrl });
+
 db.cloud.configure({
   databaseUrl,
   nameSuffix: false,
   requireAuth: false,
   unsyncedTables: ["config"],
 });
-
-if (typeof window !== "undefined" && window.indexedDB) {
-  db.cloud.sync();
-}
 
 // export async function setup() {
 //   const existingCategories = await db.categories.toArray();
@@ -82,7 +78,11 @@ export async function deleteFeed(feedId: string) {
 }
 
 export function updateConfig(config: AppConfig) {
-  db.config.update(config.id, { ...config });
+  const cuArray = Object.entries(config);
+  for (let [key, value] of cuArray) {
+    debugger;
+    db.config2.put({ value, id: key }, key);
+  }
 }
 
 export function markRead(item: FeedItem) {
@@ -150,11 +150,15 @@ export async function getFeeds() {
 }
 
 export async function getConfig() {
-  const config = await db.config.toArray();
-  if (config.length === 0) {
+  const c2 = await db.config2.toArray();
+  if (c2.length === 0) {
     return undefined;
   }
-  return config[0];
+  return c2.reduce((acc, { id, value }) => {
+    // @ts-ignore
+    acc[id] = value;
+    return acc;
+  }, {} as AppConfig);
 }
 
 export async function getCategories() {
@@ -197,7 +201,6 @@ export async function getFeedItems(feedUrl?: string, hideRead = false) {
   } else {
     collection = feedItemsTable.filter(filterReadOut);
   }
-  console.log("getFeedItems called");
   return collection.reverse().sortBy("pubDate");
 }
 

@@ -19,7 +19,6 @@ const AddFeedsPage = ({}) => {
   const fetchFeedDetails = async (url: string) => {
     setIsValid(false);
     setDetails({});
-    console.log({ url });
     const response = await fetch(`/api/feed/add?url=${url}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch feed: ${response.status}`);
@@ -46,7 +45,6 @@ const AddFeedsPage = ({}) => {
     });
     data.id = data.xmlUrl;
     const [validData, errors] = validateFeed(data);
-    console.log({ validData });
     if (!validData) {
       toast.error(errors?.formErrors.join("\n") || "Validation error");
       return;

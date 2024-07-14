@@ -8,8 +8,8 @@ import Shortcut from "@/app/settings/config/shortcut";
 import FormCheckboxGroup from "@/components/form-checkbox-group";
 import FormInputGroup from "@/components/form-input-group";
 import { Button } from "@/components/ui/button";
-import { getConfig, updateConfig } from "@/lib/db";
-import { AppConfig, Shortcut as ShortcutType } from "@/types";
+import { db, getConfig, updateConfig } from "@/lib/db";
+import { AppConfig, AppConfigExpanded, booleanFields, Shortcut as ShortcutType } from "@/types";
 
 const handleSubmit = (e: FormEvent<HTMLFormElement>, config: AppConfig) => {
   e.preventDefault();
@@ -31,14 +31,19 @@ const handleSubmit = (e: FormEvent<HTMLFormElement>, config: AppConfig) => {
       shortcuts[+idx][shortCutFieldName] = value;
     } else {
       // @ts-ignore
-      configUpdate[field] = value;
+      configUpdate[field] = booleanFields.includes(field) ? value === "on" : value;
     }
   });
   configUpdate.shortcuts = shortcuts;
-  // console.log({ configUpdate });
+  // if (!config2?.length) {
+  //   const cuArray = Object.entries(configUpdate);
+  //   for (let [key, value] of cuArray) {
+  //     debugger;
+  //     db.config2.put({ value, id: key }, key);
+  //   }
+  // }
   updateConfig(configUpdate);
 };
-
 export const Config = ({}) => {
   const config = useLiveQuery(getConfig);
 

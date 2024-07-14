@@ -64,7 +64,6 @@ export const FeedDetailsItem = ({
   const onOutsideClickListener = useCallback(
     function (e: MouseEvent) {
       const path = e.composedPath();
-      console.log({ current: selfRef.current, path });
       if (!selfRef.current || !path.includes(selfRef.current)) {
         setSelectedItem(undefined);
       }
