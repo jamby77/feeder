@@ -22,6 +22,11 @@ export interface AppConfig {
   shortcuts: Shortcut[];
 }
 
+export interface AppConfigExpanded {
+  id: string;
+  value: any;
+}
+
 export interface Category {
   id: string;
   text: string;

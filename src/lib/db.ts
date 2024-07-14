@@ -1,12 +1,13 @@
 import Dexie, { Collection, InsertType, type EntityTable } from "dexie";
 import dexieCloud from "dexie-cloud-addon";
 import { validateFeedItem } from "@/lib/validation";
-import { AppConfig, Category, Feed, FeedItem } from "@/types";
+import { AppConfig, AppConfigExpanded, Category, Feed, FeedItem } from "@/types";
 
 // import data from "../mockData/data.json";
 
 const db = new Dexie("FeederDatabase", { addons: [dexieCloud] }) as Dexie & {
   config: EntityTable<AppConfig, "id">;
+  config2: EntityTable<AppConfigExpanded, "id">;
   categories: EntityTable<
     Category,
     "id" // primary key "id" (for the typings only)
@@ -16,8 +17,9 @@ const db = new Dexie("FeederDatabase", { addons: [dexieCloud] }) as Dexie & {
 };
 
 // Schema declaration:
-db.version(2).stores({
-  config: "@id",
+db.version(10).stores({
+  config: "++id",
+  config2: "id",
   categories: "id", // primary key "id" (for the runtime!)
   feeds: "id, *categories, lastUpdated", // primary key "id" (for the runtime!)
   feedItems: "id, title, pubDate, isRead, feedId", // primary key "id" (for the runtime!)
@@ -28,6 +30,8 @@ console.log({ databaseUrl });
 db.cloud.configure({
   databaseUrl,
   nameSuffix: false,
+  requireAuth: false,
+  unsyncedTables: ["config"],
 });
 
 if (typeof window !== "undefined" && window.indexedDB) {
@@ -68,6 +72,7 @@ if (typeof window !== "undefined" && window.indexedDB) {
 export async function addFeed(feed: Feed) {
   return db.feeds.add(feed, feed.id);
 }
+
 export async function updatedFeed(feed: Feed) {
   return db.feeds.put(feed, feed.id);
 }
@@ -83,6 +88,7 @@ export function updateConfig(config: AppConfig) {
 export function markRead(item: FeedItem) {
   db.feedItems.update(item.id, { isRead: true });
 }
+
 export async function markAllRead(feedId?: string) {
   if (feedId) {
     return db.feedItems.where("feedId").equals(feedId).modify({ isRead: true });
@@ -126,6 +132,7 @@ export async function setFeedItems(
     }
   }
 }
+
 export async function getFeeds() {
   const feeds = await db.feeds.toArray();
   // Attach resolved properties "feed items" to each feed
@@ -173,14 +180,17 @@ export async function getTotalFeedUnreadCount(feedUrl: string) {
 export async function getTotalFeedCount(feedUrl: string) {
   return db.feedItems.where("feedId").equals(feedUrl).count();
 }
+
 export async function getFeedItems(feedUrl?: string, hideRead = false) {
   const feedItemsTable = db.feedItems;
+
   function filterReadOut(item: FeedItem) {
     if (!hideRead) {
       return true;
     }
     return !item.isRead;
   }
+
   let collection: Collection<FeedItem, string, InsertType<FeedItem, "id">>;
   if (feedUrl) {
     collection = feedItemsTable.where("feedId").equals(feedUrl).and(filterReadOut);
