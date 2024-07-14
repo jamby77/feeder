@@ -86,9 +86,9 @@ export const FeedDetailsItem = ({
     >
       <div
         ref={scrollRef}
-        className="mx-auto flex h-full max-w-lg flex-col overflow-hidden overflow-y-scroll bg-muted px-4 pb-12 md:max-w-2xl lg:max-w-4xl"
+        className="mx-auto flex h-full max-w-lg flex-col overflow-hidden overflow-y-scroll bg-muted pb-12 md:max-w-2xl lg:max-w-4xl"
       >
-        <div className="sticky top-0 mb-4 border-b-2 bg-accent pb-4 pt-12 backdrop-blur" title={item.title}>
+        <div className="sticky top-0 mb-4 border-b-2 bg-accent px-4 pb-4 pt-12 backdrop-blur" title={item.title}>
           <a
             href={item.link}
             target="_blank"
@@ -98,7 +98,7 @@ export const FeedDetailsItem = ({
             <Lead className="inline-block max-w-[90%] truncate" dangerouslySetInnerHTML={{ __html: title }} />
           </a>
         </div>
-        <div className="space-y-1.5 text-muted-foreground">
+        <div className="space-y-1.5 px-4 text-muted-foreground">
           <PubDate item={item} />
           <Author item={item} />
           <Category item={item} />
@@ -106,9 +106,11 @@ export const FeedDetailsItem = ({
             in {feed?.title}
           </Small>
         </div>
-        <FeedItemImage item={item} size="large" />
+        <div className="px-4">
+          <FeedItemImage item={item} size="large" />
+        </div>
         <div
-          className="prose prose-xl prose-stone mb-16 mt-4 w-full dark:prose-invert"
+          className="prose prose-xl prose-stone mb-16 mt-4 w-full px-4 dark:prose-invert"
           dangerouslySetInnerHTML={{ __html: content }}
         />
       </div>
