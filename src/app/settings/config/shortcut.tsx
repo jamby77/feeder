@@ -35,7 +35,7 @@ export const Shortcut = ({
       />
 
       <FormSelectGroup id={`command-${keyIdx}`} label="Shortcut Command" variant="vertical">
-        <Select defaultValue={command}>
+        <Select defaultValue={command} name={mkName("command")}>
           <SelectTrigger className="w-full" id={`command-${keyIdx}`} name={mkName("command")} defaultValue={command}>
             <SelectValue placeholder="Choose command" />
           </SelectTrigger>

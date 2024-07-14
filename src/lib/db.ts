@@ -80,7 +80,6 @@ export async function deleteFeed(feedId: string) {
 export function updateConfig(config: AppConfig) {
   const cuArray = Object.entries(config);
   for (let [key, value] of cuArray) {
-    debugger;
     db.config2.put({ value, id: key }, key);
   }
 }

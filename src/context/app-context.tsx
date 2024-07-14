@@ -258,6 +258,8 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
         eventListeners.forEach(listener => {
           document.addEventListener("keyup", listener);
         });
+      } else {
+        console.log("config missing");
       }
     }
     return () => {
