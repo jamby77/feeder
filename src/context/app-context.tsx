@@ -99,19 +99,24 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const [feed, setFeed] = useState<Feed | undefined>(undefined);
   const feedUrl = feed?.xmlUrl;
 
+  // all feeds
+  const feeds = useLiveQuery(getFeeds);
+  const config = useLiveQuery(getConfig);
+
   const setFeedCallback = useCallback(
     (newFeed: Feed | undefined) => {
       if (newFeed?.id !== feed?.id) {
         // clear session items when feed changes
         setSessionItems(undefined);
+      } else {
+        getFeedItems(newFeed?.xmlUrl, config?.hideRead).then(feedItems => {
+          setSessionItems([...feedItems]);
+        });
       }
       setFeed(newFeed);
     },
-    [feed],
+    [config?.hideRead, feed?.id],
   );
-  // all feeds
-  const feeds = useLiveQuery(getFeeds);
-  const config = useLiveQuery(getConfig);
 
   const hideRead = config?.hideRead;
   // all feed categories
@@ -136,7 +141,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   // set next rss item in the feed as selected item
   const nextItem = useCallback(() => {
     if (!sessionItems) {
-      console.log("no session items");
+      toast("No session items");
       return;
     }
     let index = 0;
@@ -151,6 +156,9 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     } else if (index === 0 && !selectedItem && sessionItems.length) {
       // if nothing is currently selected and try to navigate to next item, start from the beginning
       setSelectedItem(sessionItems[0]);
+    }
+    if (index === sessionItems.length - 1) {
+      toast("No next unread items");
     }
   }, [sessionItems, selectedItem]);
 
@@ -168,6 +176,8 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     } else if (index === 0 && !selectedItem && sessionItems.length) {
       // if nothing is currently selected and try to navigate to prev item, start from the end
       setSelectedItem(sessionItems.at(-1));
+    } else {
+      toast("No previous unread items");
     }
   }, [sessionItems, selectedItem]);
 
@@ -248,9 +258,9 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
                 return;
               }
               e.preventDefault();
-              toast(<span style={{ textTransform: "capitalize" }}>running command: {sc.title}</span>, {
-                duration: 1000,
-              });
+              // toast(<span style={{ textTransform: "capitalize" }}>running command: {sc.title}</span>, {
+              //   duration: 300,
+              // });
               command[sc.command]();
             });
           }
@@ -265,6 +275,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     return () => {
       if (document) {
         eventListeners.forEach(listener => {
+          console.log("unregister listener");
           document.removeEventListener("keyup", listener);
         });
       }

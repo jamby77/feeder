@@ -105,7 +105,7 @@ export const Sidebar = ({}) => {
                           title="Mark Read"
                           onClick={() => {
                             toast.success(`${feed.title} marked read`, {});
-                            return markAllRead(feed.id);
+                            return markAllRead(feed.xmlUrl);
                           }}
                         >
                           ✔
