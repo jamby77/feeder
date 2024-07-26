@@ -85,9 +85,9 @@ export const FeedDetailsItem = ({
     >
       <div
         ref={scrollRef}
-        className="mx-auto flex h-full max-w-lg flex-col overflow-hidden overflow-y-scroll bg-muted pb-12 md:max-w-2xl lg:max-w-4xl"
+        className="mx-auto flex h-full max-w-lg flex-col overflow-hidden overflow-y-scroll pb-12 md:max-w-2xl lg:max-w-4xl"
       >
-        <div className="sticky top-0 mb-4 border-b-2 bg-accent px-4 pb-4 pt-12 backdrop-blur" title={item.title}>
+        <div className="sticky top-0 mb-4 border-b-2 bg-background px-4 pb-4 pt-12 backdrop-blur" title={item.title}>
           <a
             href={item.link}
             target="_blank"
