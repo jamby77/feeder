@@ -214,7 +214,10 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     return {
       nextUnread(): void {},
       prevUnread(): void {},
-      refresh: refreshFeeds,
+      refresh: () => {
+        toast.loading("Refreshing ...", { duration: 5000 });
+        return refreshFeeds();
+      },
       toggleHideEmptyCategories(): void {},
       toggleHideEmptyFeeds(): void {},
       toggleHideRead(): void {},
