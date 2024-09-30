@@ -4,8 +4,8 @@ import { FeedItem } from "@/types";
 
 const imageSizes = {
   small: 200,
-  medium: 400,
-  large: 700,
+  medium: 600,
+  large: 900,
 } as const;
 type Size = keyof typeof imageSizes;
 export const FeedItemImage = ({ item, size }: { item: FeedItem; size?: Size }) => {
@@ -21,7 +21,7 @@ export const FeedItemImage = ({ item, size }: { item: FeedItem; size?: Size }) =
       key={image}
       placeholder="blur"
       blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAHJJREFUKFOdkCEOwCAMRT8GBQ7DBbj/QTgBCgUGBwoD6RayLploVvXz+/qbVsUYl3MOWmt81ZwTrTWonPMiEUKAtfbF9t6RUgIFqVLKMsZcBocPRN4Y4wa99+ANiuWDtdYHpOaBSfP0f6BotegY8XukD9/UXoQ13hkK+gAAAABJRU5ErkJggg=="
-      sizes="(max-width: 768px) 400px, (max-width: 1200px) 700px, 200px"
+      sizes={`(max-width: 768px) ${imageSizes.medium}px, (max-width: 1200px) ${imageSizes.large}px, ${imageSizes.small}px`}
       className="mt-4"
       src={image}
       alt={item.title}

@@ -81,11 +81,11 @@ export const FeedDetailsItem = ({
   return (
     <div
       ref={selfRef}
-      className="absolute bottom-0 left-8 right-0 top-0 place-content-center overflow-hidden overflow-y-auto rounded-l-2xl border-l-4 bg-background md:left-48"
+      className="absolute bottom-0 left-8 right-0 top-0 place-content-center overflow-hidden rounded-l-2xl border-l-4 bg-background md:left-48"
     >
       <div
         ref={scrollRef}
-        className="mx-auto flex h-full max-w-lg flex-col overflow-hidden overflow-y-scroll pb-12 md:max-w-2xl lg:max-w-4xl"
+        className="mx-auto my-1 flex h-full max-w-lg flex-col overflow-hidden overflow-y-auto pb-12 shadow-lg md:max-w-2xl lg:max-w-5xl"
       >
         <div className="sticky top-0 mb-4 border-b-2 bg-background px-4 pb-4 pt-12 backdrop-blur" title={item.title}>
           <a

@@ -57,7 +57,7 @@ export const FeedListItem = ({
         <CardContent>
           <FeedItemImage item={item} size="small" />
           <div
-            className="prose prose-stone mt-4 max-h-[500px] w-full overflow-hidden overflow-y-scroll dark:prose-invert"
+            className="prose prose-stone mt-4 max-h-[500px] w-full overflow-hidden overflow-y-auto dark:prose-invert"
             dangerouslySetInnerHTML={{ __html: content }}
           />
         </CardContent>
