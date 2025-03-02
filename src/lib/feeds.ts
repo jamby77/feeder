@@ -1,6 +1,6 @@
-import { X2jOptions, XMLBuilder, XMLParser } from "fast-xml-parser";
-import { validateFeedItem } from "@/lib/validation";
-import { Feed, FeedItem } from "@/types";
+import { XMLBuilder } from "fast-xml-parser";
+import { setFeedItems } from "@/lib/db";
+import { Feed } from "@/types";
 
 export function getItemUrl(item: Record<string, any>) {
   const link = item.link || "";
@@ -39,28 +39,6 @@ export function getFeedImage(item: Record<string, any>) {
     }
   }
   return image;
-}
-
-async function fetchFeedContent(url: string) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch feed: ${response.status}`);
-  }
-  return response.text();
-}
-
-function parseFeedXml(xml: string) {
-  const parserOptions: X2jOptions = {
-    ignoreAttributes: false,
-    stopNodes: ["feed.entry.content"],
-    allowBooleanAttributes: true,
-    attributesGroupName: "__attributes",
-    parseAttributeValue: true,
-    parseTagValue: true,
-    ignoreDeclaration: true,
-  };
-  const parser = new XMLParser(parserOptions);
-  return parser.parse(xml);
 }
 
 export function buildFeedsExportData(feeds: Feed[]) {
@@ -164,15 +142,6 @@ export function buildFeedsOPMLXml(feeds: Feed[]) {
   return builder.build(data);
 }
 
-function getFeedItemDate(item: Record<string, any>) {
-  let pubDateStr = item.pubDate || "";
-  if (!pubDateStr && item.updated) {
-    // atom (vercel)
-    pubDateStr = item.updated;
-  }
-  return pubDateStr.trim().length > 0 ? new Date(pubDateStr) : new Date();
-}
-
 export function getFeedItemContent(item: Record<string, any>) {
   let description = item.description || "";
   if (description && typeof description === "object" && description["#text"]) {
@@ -185,72 +154,92 @@ export function getFeedItemContent(item: Record<string, any>) {
   return description;
 }
 
-function buildFeedItem(feedId: string, item: Record<string, any>): FeedItem {
-  const title = item.title || "";
-
-  const image = getFeedImage(item);
-  const description = getFeedItemContent(item);
-  let link = getItemUrl(item);
-  const pubDate = getFeedItemDate(item);
-  const data = {
-    id: link,
-    feedId,
-    title,
-    description,
-    pubDate,
-    link,
-    image,
-    isRead: false,
-  };
-
-  const [feedItem, error] = validateFeedItem(data);
-
-  if (error || !feedItem) {
-    console.error({ error: JSON.stringify(error, null, 2), data });
-    return {} as FeedItem;
+export async function fetchFeedDetails(feedUrl: string) {
+  const url = new URL(`${process.env.NEXT_PUBLIC_FEEDER_API_URL}/feed/details`);
+  url.searchParams.set("feed", feedUrl);
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch feed: ${response.status}`);
   }
-  for (const field in item) {
-    if (!(field in feedItem)) {
-      // @ts-ignore
-      feedItem[field as string] = item[field];
+  return response.json();
+}
+
+export async function markFeedItemRead(feedUrl: string, itemUrl?: string) {
+  const url = new URL(`${process.env.NEXT_PUBLIC_FEEDER_API_URL}/feed/items/read`);
+  url.searchParams.set("feed", feedUrl);
+  if (itemUrl) {
+    url.searchParams.set("feedItem", itemUrl);
+  }
+  const response = await fetch(url, { method: "put" });
+  if (!response.ok) {
+    throw new Error(`Failed to mark feed item read: ${response.status}`);
+  }
+}
+
+export async function markFeedItemUnread(feedUrl: string, itemUrl?: string) {
+  const url = new URL(`${process.env.NEXT_PUBLIC_FEEDER_API_URL}/feed/items/un-read`);
+  url.searchParams.set("feed", feedUrl);
+  if (itemUrl) {
+    url.searchParams.set("feedItem", itemUrl);
+  }
+  const response = await fetch(url, { method: "put" });
+  if (!response.ok) {
+    throw new Error(`Failed to mark feed item read: ${response.status}`);
+  }
+}
+
+export async function fetchFeeds(feeds: Feed[], refreshInterval: number = 10) {
+  if (!feeds) {
+    console.warn("no feeds found");
+    return;
+  }
+  // pass all feed urls to backend
+  const feedUrls = [];
+  const now = new Date();
+  for (const feed of feeds) {
+    const lastUpdated = feed.lastUpdated;
+    if (lastUpdated && now.getTime() - lastUpdated.getTime() < refreshInterval) {
+      // skip fetching
+      continue;
     }
+    feedUrls.push(feed.xmlUrl);
   }
+  try {
+    // fetch all feeds from backend, because of CORS issues
+    const responses = await Promise.allSettled(
+      feedUrls.map(urlStr => {
+        const url = new URL(`${process.env.NEXT_PUBLIC_FEEDER_API_URL}/feed/items`);
+        url.searchParams.set("feed", urlStr);
+        return fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      }),
+    );
 
-  return feedItem;
-}
-function extractFeedItems(doc: Record<string, any>) {
-  let itemsNodes = doc?.rss?.channel?.item ?? doc?.rdf?.channel?.item;
-  if (!itemsNodes) {
-    itemsNodes = doc?.feed?.entry;
+    const json = [];
+    for (const r of responses) {
+      if (r.status === "fulfilled") {
+        const data = await r.value.json();
+        if (!data || !data[0]) {
+          console.log(JSON.stringify(data, null, 2), r.value.url);
+          continue;
+        }
+        const url = data[0].feedId;
+        json.push({
+          url,
+          items: data,
+        });
+      } else {
+        console.table(r);
+      }
+    }
+    await setFeedItems(json, now);
+    return json;
+  } catch (e) {
+    console.error(e);
   }
-  return itemsNodes;
-}
-
-export async function getFeedItems(feedUrl: string) {
-  const xml = await fetchFeedContent(feedUrl);
-
-  const doc = parseFeedXml(xml);
-  let itemsNodes = extractFeedItems(doc);
-  return itemsNodes.map((item: Record<string, any>) => buildFeedItem(feedUrl, item));
-}
-
-function getFeedTitle(doc: Record<string, any>): string {
-  return doc?.rss?.channel?.title || doc?.rdf?.channel?.title || doc?.feed?.title || "";
-}
-
-function getHtmlUrl(doc: Record<string, any>) {
-  return doc?.rss?.channel?.link || doc?.rdf?.channel?.link || doc?.feed?.link || "";
-}
-
-export async function getFeedDetails(feedUrl: string) {
-  const xml = await fetchFeedContent(feedUrl);
-
-  const doc = parseFeedXml(xml);
-  const itemsNodes = extractFeedItems(doc);
-  return {
-    title: getFeedTitle(doc),
-    xmlUrl: feedUrl,
-    htmlUrl: getHtmlUrl(doc),
-    items: itemsNodes.map((item: Record<string, any>) => buildFeedItem(feedUrl, item)),
-  };
+  return [];
 }

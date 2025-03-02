@@ -8,8 +8,8 @@ import Shortcut from "@/app/settings/config/shortcut";
 import FormCheckboxGroup from "@/components/form-checkbox-group";
 import FormInputGroup from "@/components/form-input-group";
 import { Button } from "@/components/ui/button";
-import { db, getConfig, updateConfig } from "@/lib/db";
-import { AppConfig, AppConfigExpanded, booleanFields, Shortcut as ShortcutType } from "@/types";
+import { getConfig, updateConfig } from "@/lib/db";
+import { AppConfig, booleanFields, Shortcut as ShortcutType } from "@/types";
 
 const handleSubmit = (e: FormEvent<HTMLFormElement>, config: AppConfig) => {
   e.preventDefault();

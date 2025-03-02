@@ -11,9 +11,8 @@ import {
   getFeeds,
   getTotalFeedUnreadCount,
   getTotalUnreadCount,
-  setFeedItems,
 } from "@/lib/db";
-import { getItemUrl } from "@/lib/feeds";
+import { fetchFeeds, getItemUrl } from "@/lib/feeds";
 import { AppConfig, Category, Feed, FeedItem } from "@/types";
 
 type AppContextValueType = {
@@ -48,46 +47,6 @@ const defaultValue: AppContextValueType = {
 };
 
 const AppContext = createContext<AppContextValueType>(defaultValue);
-async function fetchFeeds(feeds: Feed[], refreshInterval: number = 10) {
-  if (!feeds) {
-    console.warn("no feeds found");
-    return;
-  }
-  // pass all feed urls to backend
-  const feedUrls = [];
-  const now = new Date();
-  for (const feed of feeds) {
-    const lastUpdated = feed.lastUpdated;
-    if (lastUpdated && now.getTime() - lastUpdated.getTime() < refreshInterval) {
-      // skip fetching
-      continue;
-    }
-    feedUrls.push(feed.xmlUrl);
-  }
-  try {
-    // fetch all feeds from backend, because of CORS issues
-    const response = await fetch(`/api/feed`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ url: feedUrls }),
-    });
-    if (!response.ok) {
-      console.error(`Failed to fetch feeds: ${response.status}`);
-      return [];
-    }
-    const json = (await response.json()) as {
-      url: string;
-      items: FeedItem[];
-    }[];
-    await setFeedItems(json, now);
-    return json;
-  } catch (e) {
-    console.error(e);
-  }
-  return [];
-}
 
 const skipTags = ["input", "textarea"];
 

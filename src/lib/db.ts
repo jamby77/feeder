@@ -1,5 +1,6 @@
 import Dexie, { Collection, InsertType, type EntityTable } from "dexie";
 import dexieCloud from "dexie-cloud-addon";
+import { markFeedItemRead, markFeedItemUnread } from "@/lib/feeds";
 import { validateFeedItem } from "@/lib/validation";
 import { AppConfig, AppConfigExpanded, Category, Feed, FeedItem } from "@/types";
 
@@ -85,7 +86,7 @@ export function updateConfig(config: AppConfig) {
 }
 
 export function markRead(item: FeedItem) {
-  db.feedItems.update(item.id, { isRead: true });
+  markFeedItemRead(item.feedId, item.id).then(() => db.feedItems.update(item.id, { isRead: true }));
 }
 
 export async function markAllRead(feedId?: string) {
@@ -96,7 +97,7 @@ export async function markAllRead(feedId?: string) {
 }
 
 export function markUnread(item: FeedItem) {
-  db.feedItems.update(item.id, { isRead: false });
+  markFeedItemUnread(item.feedId, item.id).then(() => db.feedItems.update(item.id, { isRead: false }));
 }
 
 export async function getFeedItem(itemId: string) {

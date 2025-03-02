@@ -10,23 +10,24 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { addFeed, db } from "@/lib/db";
+import { fetchFeedDetails } from "@/lib/feeds";
 import { validateFeed } from "@/lib/validation";
 import { Feed } from "@/types";
 
 const AddFeedsPage = ({}) => {
   const [details, setDetails] = useState<Record<string, any>>({});
   const [isValid, setIsValid] = useState(false);
-  const fetchFeedDetails = async (url: string) => {
+  const handleInputBlur = async (url: string) => {
     setIsValid(false);
     setDetails({});
-    const response = await fetch(`/api/feed/add?url=${url}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch feed: ${response.status}`);
-    }
-    const details = await response.json();
-    setDetails(details);
-    if (details.title && details.htmlUrl) {
-      setIsValid(true);
+    try {
+      const details = await fetchFeedDetails(url);
+      setDetails(details);
+      if (details.title && details.htmlUrl) {
+        setIsValid(true);
+      }
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -77,7 +78,7 @@ const AddFeedsPage = ({}) => {
             name="xmlUrl"
             id="xmlUrl"
             placeholder="Feed Url"
-            onBlur={e => fetchFeedDetails(e.currentTarget.value)}
+            onBlur={e => handleInputBlur(e.currentTarget.value)}
           />
         </div>
         {details.title && (
