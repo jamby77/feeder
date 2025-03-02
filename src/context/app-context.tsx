@@ -12,7 +12,7 @@ import {
   getTotalFeedUnreadCount,
   getTotalUnreadCount,
 } from "@/lib/db";
-import { fetchFeeds, getItemUrl } from "@/lib/feeds";
+import { fetchFeedConfig, fetchFeeds, getItemUrl } from "@/lib/feeds";
 import { AppConfig, Category, Feed, FeedItem } from "@/types";
 
 type AppContextValueType = {
@@ -165,6 +165,9 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const refreshInterval = config?.refreshInterval;
   const refreshFeeds = useCallback(async () => {
     if (!feeds) {
+      console.warn("no feeds found, fetching list from BE");
+      const feedsConfig = await fetchFeedConfig();
+      console.log({ feedsConfig });
       return;
     }
     return fetchFeeds(feeds, refreshInterval);

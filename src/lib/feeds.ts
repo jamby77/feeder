@@ -188,6 +188,16 @@ export async function markFeedItemUnread(feedUrl: string, itemUrl?: string) {
   }
 }
 
+export async function fetchFeedConfig() {
+  const url = new URL(`${process.env.NEXT_PUBLIC_FEEDER_API_URL}/feeds`);
+  console.log({ url });
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch feed: ${response.status}`);
+  }
+  return response.json();
+}
+
 export async function fetchFeeds(feeds: Feed[], refreshInterval: number = 10) {
   if (!feeds) {
     console.warn("no feeds found");
