@@ -2,6 +2,11 @@ import { XMLBuilder } from "fast-xml-parser";
 import { setFeedItems } from "@/lib/db";
 import { Feed } from "@/types";
 
+let baseUrl = process.env.NEXT_PUBLIC_FEEDER_API_URL ?? "";
+if (baseUrl.endsWith("/")) {
+  baseUrl = baseUrl.slice(0, -1);
+}
+
 export function getItemUrl(item: Record<string, any>) {
   const link = item.link || "";
   const url = item.url || "";
@@ -155,7 +160,7 @@ export function getFeedItemContent(item: Record<string, any>) {
 }
 
 export async function fetchFeedDetails(feedUrl: string) {
-  const url = new URL(`${process.env.NEXT_PUBLIC_FEEDER_API_URL}/feed/details`);
+  const url = new URL(`${baseUrl}/feed/details`);
   url.searchParams.set("feed", feedUrl);
   const response = await fetch(url);
   if (!response.ok) {
@@ -165,7 +170,7 @@ export async function fetchFeedDetails(feedUrl: string) {
 }
 
 export async function markFeedItemRead(feedUrl: string, itemUrl?: string) {
-  const url = new URL(`${process.env.NEXT_PUBLIC_FEEDER_API_URL}/feed/items/read`);
+  const url = new URL(`${baseUrl}/feed/items/read`);
   url.searchParams.set("feed", feedUrl);
   if (itemUrl) {
     url.searchParams.set("feedItem", itemUrl);
@@ -177,7 +182,7 @@ export async function markFeedItemRead(feedUrl: string, itemUrl?: string) {
 }
 
 export async function markFeedItemUnread(feedUrl: string, itemUrl?: string) {
-  const url = new URL(`${process.env.NEXT_PUBLIC_FEEDER_API_URL}/feed/items/un-read`);
+  const url = new URL(`${baseUrl}/feed/items/un-read`);
   url.searchParams.set("feed", feedUrl);
   if (itemUrl) {
     url.searchParams.set("feedItem", itemUrl);
@@ -189,7 +194,7 @@ export async function markFeedItemUnread(feedUrl: string, itemUrl?: string) {
 }
 
 export async function fetchFeedConfig() {
-  const url = new URL(`${process.env.NEXT_PUBLIC_FEEDER_API_URL}/feeds`);
+  const url = new URL(`${baseUrl}/feeds`);
   console.log({ url });
   const response = await fetch(url);
   if (!response.ok) {
@@ -218,7 +223,7 @@ export async function fetchFeeds(feeds: Feed[], refreshInterval: number = 10) {
     // fetch all feeds from backend, because of CORS issues
     const responses = await Promise.allSettled(
       feedUrls.map(urlStr => {
-        const url = new URL(`${process.env.NEXT_PUBLIC_FEEDER_API_URL}/feed/items`);
+        const url = new URL(`${baseUrl}/feed/items`);
         url.searchParams.set("feed", urlStr);
         return fetch(url, {
           method: "GET",
