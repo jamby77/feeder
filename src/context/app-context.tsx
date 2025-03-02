@@ -32,9 +32,9 @@ type AppContextValueType = {
 };
 const defaultValue: AppContextValueType = {
   selectedItem: undefined,
-  setSelectedItem: (item: FeedItem | undefined) => {},
+  setSelectedItem: (_item: FeedItem | undefined) => {},
   feed: undefined,
-  setFeed: (feed: Feed | undefined) => {},
+  setFeed: (_feed: Feed | undefined) => {},
   feeds: undefined,
   config: undefined,
   categories: undefined,
