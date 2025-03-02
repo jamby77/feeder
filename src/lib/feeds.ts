@@ -7,6 +7,11 @@ if (baseUrl.endsWith("/")) {
   baseUrl = baseUrl.slice(0, -1);
 }
 
+const bypass = process.env.NEXT_PUBLIC_VERCEL_SECRET ?? "pass";
+const headers = new Headers();
+headers.set("x-vercel-protection-bypass", bypass);
+headers.set("x-vercel-set-bypass-cookie", "true");
+
 export function getItemUrl(item: Record<string, any>) {
   const link = item.link || "";
   const url = item.url || "";
@@ -162,7 +167,7 @@ export function getFeedItemContent(item: Record<string, any>) {
 export async function fetchFeedDetails(feedUrl: string) {
   const url = new URL(`${baseUrl}/feed/details`);
   url.searchParams.set("feed", feedUrl);
-  const response = await fetch(url);
+  const response = await fetch(url, { headers });
   if (!response.ok) {
     throw new Error(`Failed to fetch feed: ${response.status}`);
   }
@@ -175,7 +180,9 @@ export async function markFeedItemRead(feedUrl: string, itemUrl?: string) {
   if (itemUrl) {
     url.searchParams.set("feedItem", itemUrl);
   }
-  const response = await fetch(url, { method: "put" });
+  const newHeaders = new Headers(headers);
+  newHeaders.set("content-type", "application/json");
+  const response = await fetch(url, { method: "put", headers: newHeaders });
   if (!response.ok) {
     throw new Error(`Failed to mark feed item read: ${response.status}`);
   }
@@ -187,7 +194,9 @@ export async function markFeedItemUnread(feedUrl: string, itemUrl?: string) {
   if (itemUrl) {
     url.searchParams.set("feedItem", itemUrl);
   }
-  const response = await fetch(url, { method: "put" });
+  const newHeaders = new Headers(headers);
+  newHeaders.set("content-type", "application/json");
+  const response = await fetch(url, { method: "put", headers: newHeaders });
   if (!response.ok) {
     throw new Error(`Failed to mark feed item read: ${response.status}`);
   }
@@ -196,7 +205,7 @@ export async function markFeedItemUnread(feedUrl: string, itemUrl?: string) {
 export async function fetchFeedConfig() {
   const url = new URL(`${baseUrl}/feeds`);
   console.log({ url });
-  const response = await fetch(url);
+  const response = await fetch(url, { headers });
   if (!response.ok) {
     throw new Error(`Failed to fetch feed: ${response.status}`);
   }
@@ -227,9 +236,7 @@ export async function fetchFeeds(feeds: Feed[], refreshInterval: number = 10) {
         url.searchParams.set("feed", urlStr);
         return fetch(url, {
           method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers,
         });
       }),
     );
