@@ -1,7 +1,8 @@
 "use client";
 
 import toast from "react-hot-toast";
-import { H3, H4, Small } from "@/components/typography/typography";
+import { SidebarItem } from "@/app/sidebarItem";
+import { H3, H4 } from "@/components/typography/typography";
 import { Button } from "@/components/ui/button";
 import { useAppContext } from "@/context/app-context";
 import { markAllRead } from "@/lib/db";
@@ -9,9 +10,14 @@ import { cn } from "@/lib/utils";
 import { Category } from "@/types";
 
 export const Sidebar = ({}) => {
-  const { refreshFeeds, categories, feeds, setFeed, countAll, countCurrent, feed: currentFeed } = useAppContext();
+  const { refreshFeeds, categories, feeds, setFeed, countAll, feed: currentFeed } = useAppContext();
+  const otherFeeds = feeds?.filter(f => {
+    if (!f.categories) return true;
+    return !f.categories.some(catId => categories?.find(cat => cat.id === catId));
+  });
+  console.log({ categories, otherFeeds });
   return (
-    <aside className="bg-app-secondary text-app-foreground flex h-screen max-h-screen-top w-full max-w-96 grow flex-col gap-2 overflow-hidden overflow-y-auto">
+    <aside className="flex h-screen max-h-screen-top w-full max-w-96 grow flex-col gap-2 overflow-hidden overflow-y-auto bg-app-secondary text-app-foreground">
       <div className="flex items-center pr-3">
         <H3
           className={cn("mt-3 flex-1 cursor-pointer p-3", {
@@ -25,7 +31,7 @@ export const Sidebar = ({}) => {
           <Button
             size="icon"
             title="Mark Read"
-            className="bg-app-accent hover:bg-app relative rounded-full px-3"
+            className="relative rounded-full bg-app-accent px-3 hover:bg-app"
             onClick={() => {
               toast.success("All marked read", {});
               markAllRead();
@@ -47,7 +53,7 @@ export const Sidebar = ({}) => {
           <Button
             size="icon"
             title="Refresh"
-            className="bg-app-accent hover:bg-app relative rounded-full px-3"
+            className="relative rounded-full bg-app-accent px-3 hover:bg-app"
             onClick={() => {
               toast.loading("Refreshing ...", { duration: 5000 });
               refreshFeeds();
@@ -76,47 +82,21 @@ export const Sidebar = ({}) => {
               {feeds
                 ?.filter(feed => feed.categories && feed.categories.includes(category.id))
                 .map(feed => {
-                  let itemsCount = feed.items?.length ?? 0;
-                  if (currentFeed?.id === feed.id && countCurrent) {
-                    itemsCount = countCurrent;
-                  }
-                  return (
-                    <li key={feed.id} className="pl-4">
-                      <Button
-                        size="lg"
-                        variant="link"
-                        className={cn("text-app-foreground m-0 h-8 p-0 px-0 py-0 hover:font-bold", {
-                          "font-bold underline": currentFeed?.id === feed.id,
-                        })}
-                        onClick={e => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          setFeed(feed);
-                        }}
-                      >
-                        <Small>{feed.title}</Small>
-                        <span>{itemsCount ? ` (${itemsCount})` : ""}</span>
-                      </Button>
-                      {itemsCount ? (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="ml-2 rounded-full px-2 hover:outline"
-                          title="Mark Read"
-                          onClick={() => {
-                            toast.success(`${feed.title} marked read`, {});
-                            return markAllRead(feed.xmlUrl);
-                          }}
-                        >
-                          ✔
-                        </Button>
-                      ) : null}
-                    </li>
-                  );
+                  return <SidebarItem feed={feed} key={feed.id} />;
                 })}
             </ul>
           </div>
         ))}
+      {otherFeeds && (
+        <div key="other" className="p-3">
+          <H4 className="mt-2">Other</H4>
+          <ul className="pt-2">
+            {otherFeeds.map(feed => {
+              return <SidebarItem feed={feed} key={feed.id} />;
+            })}
+          </ul>
+        </div>
+      )}
     </aside>
   );
 };

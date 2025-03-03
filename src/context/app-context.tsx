@@ -241,7 +241,6 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     return () => {
       if (document) {
         eventListeners.forEach(listener => {
-          console.log("unregister listener");
           document.removeEventListener("keyup", listener);
         });
       }
