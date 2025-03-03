@@ -164,7 +164,6 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
 
   const refreshInterval = config?.refreshInterval;
   const refreshFeeds = useCallback(async () => {
-    debugger;
     if (!feeds || feeds.length === 0) {
       console.warn("no feeds found, fetching list from BE");
       const feedsConfig = await fetchFeedConfig();

@@ -29,7 +29,9 @@ export const SidebarItem = ({ feed }: SidebarItemProps) => {
           setFeed(feed);
         }}
       >
-        <Small>{feed.title}</Small>
+        <Small title={feed.title} className="max-w-64 overflow-hidden text-ellipsis">
+          {feed.title}
+        </Small>
         <span>{itemsCount ? ` (${itemsCount})` : ""}</span>
       </Button>
       {itemsCount ? (
