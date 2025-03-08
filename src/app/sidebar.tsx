@@ -15,7 +15,6 @@ export const Sidebar = ({}) => {
     if (!f.categories) return true;
     return !f.categories.some(catId => categories?.find(cat => cat.id === catId));
   });
-  console.log({ categories, otherFeeds });
   return (
     <aside className="flex h-screen max-h-screen-top w-full max-w-96 grow flex-col gap-2 overflow-hidden overflow-y-auto bg-app-secondary text-app-foreground">
       <div className="flex items-center pr-3">

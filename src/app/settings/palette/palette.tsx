@@ -27,21 +27,33 @@ const ColorSection = ({ sectionName, children }: { sectionName: string; children
   );
 };
 
-function generatePalette(colors: DefaultColors, prefix?: string): JSX.Element[] {
+function generatePalette(colors: DefaultColors, prefix?: string, level = 0): JSX.Element[] {
   const colorsArray = Object.entries(colors).reverse();
   const result: JSX.Element[] = [];
+  const singles: JSX.Element[] = [];
   for (let [colorName, c] of colorsArray) {
     if (typeof c !== "string") {
       // recursively merge colors
       result.push(
         <ColorSection sectionName={colorName} key={colorName}>
-          {generatePalette(c, colorName)}
+          {generatePalette(c, colorName, level + 1)}
         </ColorSection>,
       );
     } else {
       const name = `${prefix ? prefix + "-" : ""}${colorName}`;
-      result.push(<Color key={name} color={c} colorName={name} />);
+      if (level !== 0) {
+        result.push(<Color key={name} color={c} colorName={name} />);
+      } else {
+        singles.push(<Color key={name} color={c} colorName={name} />);
+      }
     }
+  }
+  if (singles.length > 0) {
+    result.unshift(
+      <ColorSection sectionName="Singles" key="singles">
+        {singles}
+      </ColorSection>,
+    );
   }
   return result;
 }
