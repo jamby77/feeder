@@ -198,7 +198,7 @@ export async function markFeedItemUnread(feedUrl: string, itemUrl?: string) {
 }
 
 export async function fetchFeedConfig() {
-  const url = new URL(`${baseUrl}/feeds`);
+  const url = new URL(baseUrl());
   url.searchParams.set("apiUrl", "/feeds");
   const response = await fetch(url);
   if (!response.ok) {
