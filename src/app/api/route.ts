@@ -24,6 +24,7 @@ export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const url = buildApiUrl(searchParams);
+    console.log({ url });
     const res = await fetch(url, {
       headers: {
         "Content-Type": "application/json",
