@@ -106,7 +106,7 @@ export const FeedDetailsItem = ({
           </Small>
         </div>
         <div className="px-4">
-          <FeedItemImage item={item} size="large" />
+          <FeedItemImage item={item} size="medium" />
         </div>
         <div
           className="prose prose-xl prose-stone mb-16 mt-4 w-full px-4 dark:prose-invert"
