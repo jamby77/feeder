@@ -7,7 +7,7 @@ export const ExportLink = ({ children, href, fileName }: { children: ReactNode; 
     <Card className="h-96 w-96">
       <CardContent className="grid aspect-square place-items-center">
         <a
-          className="flex h-64 w-64 items-center justify-center rounded-xl border uppercase text-green-600 underline-offset-4 shadow hover:border-2 hover:font-bold hover:underline"
+          className="flex h-64 w-64 items-center justify-center rounded-xl border uppercase text-green-600 underline-offset-4 shadow-sm hover:border-2 hover:font-bold hover:underline"
           download={fileName}
           href={href}
         >

@@ -3,7 +3,7 @@ import { MenuItem } from "@/app/settings/menu-item";
 import { Small } from "@/components/typography/typography";
 
 const MenuItemIcon = ({ children }: { children: ReactNode }) => {
-  return <div className="pointer-events-none me-5 h-5 w-5 flex-shrink-0 align-top">{children}</div>;
+  return <div className="pointer-events-none me-5 h-5 w-5 shrink-0 align-top">{children}</div>;
 };
 
 export const SettingsNav = () => {
