@@ -5,8 +5,10 @@ import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, 
 import toast from "react-hot-toast";
 import { Command } from "@/lib/commands";
 import {
+  addFeed,
   getCategories,
   getConfig,
+  getFeed,
   getFeedItems,
   getFeeds,
   getTotalFeedUnreadCount,
@@ -49,6 +51,10 @@ const defaultValue: AppContextValueType = {
 const AppContext = createContext<AppContextValueType>(defaultValue);
 
 const skipTags = ["input", "textarea"];
+
+function isFeed(feed: unknown): feed is Feed {
+  return (feed as Feed).xmlUrl !== undefined;
+}
 
 export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   // currently viewed item
@@ -167,6 +173,20 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     if (!feeds || feeds.length === 0) {
       console.warn("no feeds found, fetching list from BE");
       const feedsConfig = await fetchFeedConfig();
+      if (feedsConfig && typeof feedsConfig === "object") {
+        for (const feed of Object.values(feedsConfig)) {
+          if (!isFeed(feed)) {
+            continue;
+          }
+          const exists = await getFeed(feed.xmlUrl);
+          if (exists) {
+            continue;
+          }
+          feed.id = feed.xmlUrl;
+          feed.lastUpdated = feed.lastUpdated ? new Date(feed.lastUpdated) : new Date();
+          await addFeed(feed);
+        } // create feeds from BE()
+      }
       console.log({ feedsConfig });
       return;
     }
