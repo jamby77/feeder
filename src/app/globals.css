@@ -1,5 +1,7 @@
-@import 'tailwindcss';
-
+@import "tailwindcss";
+@plugin '@tailwindcss/typography';
+@plugin '@tailwindcss/forms';
+@plugin 'tailwindcss-animate';
 @theme {
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
@@ -49,8 +51,8 @@
   --radius-sm: calc(var(--radius) - 4px);
 
   --font-sans:
-    var(--font-sans), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    var(--font-sans), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
 
   --animate-tik-tak: tikTak 4s linear infinite;
   --animate-accordion-down: accordion-down 0.2s ease-out;
