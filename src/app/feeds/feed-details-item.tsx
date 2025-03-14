@@ -81,23 +81,23 @@ export const FeedDetailsItem = ({
   return (
     <div
       ref={selfRef}
-      className="absolute bottom-0 left-8 right-0 top-0 place-content-center overflow-hidden rounded-l-2xl border-l-4 bg-background md:left-48"
+      className="bg-background absolute top-0 right-0 bottom-0 left-8 place-content-center overflow-hidden rounded-l-2xl border-l-4 md:left-48"
     >
       <div
         ref={scrollRef}
         className="mx-auto my-1 flex h-full max-w-lg flex-col overflow-hidden overflow-y-auto pb-12 shadow-lg md:max-w-2xl lg:max-w-5xl"
       >
-        <div className="sticky top-0 mb-4 border-b-2 bg-background px-4 pb-4 pt-12 backdrop-blur-sm" title={item.title}>
+        <div className="bg-background sticky top-0 mb-4 border-b-2 px-4 pt-12 pb-4 backdrop-blur-sm" title={item.title}>
           <a
             href={item.link}
             target="_blank"
-            className="inline-flex w-full items-center justify-start gap-4 text-lg uppercase text-foreground hover:underline"
+            className="text-foreground inline-flex w-full items-center justify-start gap-4 text-lg uppercase hover:underline"
           >
             <ExternalLinkIcon className="h-6 w-6" />
             <Lead className="inline-block max-w-[90%] truncate" dangerouslySetInnerHTML={{ __html: title }} />
           </a>
         </div>
-        <div className="space-y-1.5 px-4 text-muted-foreground">
+        <div className="text-muted-foreground space-y-1.5 px-4">
           <PubDate item={item} />
           <Author item={item} />
           <Category item={item} />
@@ -106,15 +106,15 @@ export const FeedDetailsItem = ({
           </Small>
         </div>
         <div className="px-4">
-          <FeedItemImage item={item} size="medium" />
+          <FeedItemImage item={item} size="large" />
         </div>
         <div
-          className="prose prose-xl prose-stone mb-16 mt-4 w-full px-4 dark:prose-invert"
+          className="prose prose-xl prose-stone dark:prose-invert mt-4 mb-16 w-full px-4"
           dangerouslySetInnerHTML={{ __html: content }}
         />
       </div>
       <button
-        className="absolute left-2 top-2 rounded-full bg-transparent p-6"
+        className="absolute top-2 left-2 rounded-full bg-transparent p-6"
         type="button"
         onClick={() => {
           setSelectedItem(undefined);
@@ -124,7 +124,7 @@ export const FeedDetailsItem = ({
           <Cross2Icon className="h-6 w-6" />
         </span>
       </button>
-      <div className="absolute left-12 top-1/2 flex flex-col items-center">
+      <div className="absolute top-1/2 left-12 flex flex-col items-center">
         <button
           className="mb-2 h-16 w-16 rounded-full bg-transparent text-gray-400 hover:bg-gray-200"
           type="button"
@@ -133,7 +133,7 @@ export const FeedDetailsItem = ({
           }}
         >
           <span className="sr-only">Previous</span>
-          <span className="inline-block h-6 w-6 pl-1 pt-1">
+          <span className="inline-block h-6 w-6 pt-1 pl-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               height="24px"
@@ -147,7 +147,7 @@ export const FeedDetailsItem = ({
         </button>
         <ShortcutHint sc={prev} />
       </div>
-      <div className="absolute right-12 top-1/2 flex flex-col items-center">
+      <div className="absolute top-1/2 right-12 flex flex-col items-center">
         <button
           className="mb-2 h-16 w-16 rounded-full bg-transparent text-gray-400 hover:bg-gray-200"
           type="button"
@@ -156,7 +156,7 @@ export const FeedDetailsItem = ({
           }}
         >
           <span className="sr-only">Next</span>
-          <span className="inline-block h-6 w-6 pr-1 pt-1">
+          <span className="inline-block h-6 w-6 pt-1 pr-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               height="24px"

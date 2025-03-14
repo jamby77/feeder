@@ -8,6 +8,7 @@ const imageSizes = {
   large: 900,
 } as const;
 type Size = keyof typeof imageSizes;
+const ratio = 178;
 export const FeedItemImage = ({ item, size }: { item: FeedItem; size?: Size }) => {
   const image = getFeedImage(item);
   if (!image) {
@@ -15,7 +16,7 @@ export const FeedItemImage = ({ item, size }: { item: FeedItem; size?: Size }) =
   }
 
   const imgSize = imageSizes[size || "medium"] || imageSizes.medium;
-
+  const height = (imgSize * 100) / ratio;
   return (
     <Image
       key={image}
@@ -26,7 +27,7 @@ export const FeedItemImage = ({ item, size }: { item: FeedItem; size?: Size }) =
       src={image}
       alt={item.title}
       width={imgSize}
-      height={imgSize}
+      height={height}
     />
   );
 };
