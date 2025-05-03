@@ -41,7 +41,7 @@ export interface ParagraphProps extends React.InputHTMLAttributes<HTMLParagraphE
 
 export const P = ({ children, className, ...rest }: ParagraphProps) => {
   return (
-    <p className={cn("leading-7 [&:not(:first-child)]:mt-6", className)} {...rest}>
+    <p className={cn("leading-7 not-first:mt-6", className)} {...rest}>
       {children}
     </p>
   );

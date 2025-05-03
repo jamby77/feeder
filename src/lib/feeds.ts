@@ -2,6 +2,8 @@ import { XMLBuilder } from "fast-xml-parser";
 import { setFeedItems } from "@/lib/db";
 import { Feed } from "@/types";
 
+const baseUrl = () => `${document.location.origin}/api`;
+
 export function getItemUrl(item: Record<string, any>) {
   const link = item.link || "";
   const url = item.url || "";
@@ -155,8 +157,9 @@ export function getFeedItemContent(item: Record<string, any>) {
 }
 
 export async function fetchFeedDetails(feedUrl: string) {
-  const url = new URL(`${process.env.NEXT_PUBLIC_FEEDER_API_URL}/feed/details`);
+  const url = new URL(baseUrl());
   url.searchParams.set("feed", feedUrl);
+  url.searchParams.set("apiUrl", "/feed/details");
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`Failed to fetch feed: ${response.status}`);
@@ -165,27 +168,43 @@ export async function fetchFeedDetails(feedUrl: string) {
 }
 
 export async function markFeedItemRead(feedUrl: string, itemUrl?: string) {
-  const url = new URL(`${process.env.NEXT_PUBLIC_FEEDER_API_URL}/feed/items/read`);
+  const url = new URL(baseUrl());
   url.searchParams.set("feed", feedUrl);
+  url.searchParams.set("apiUrl", "/feed/items/read");
   if (itemUrl) {
     url.searchParams.set("feedItem", itemUrl);
   }
-  const response = await fetch(url, { method: "put" });
+  const newHeaders = new Headers();
+  newHeaders.set("content-type", "application/json");
+  const response = await fetch(url, { method: "put", headers: newHeaders });
   if (!response.ok) {
     throw new Error(`Failed to mark feed item read: ${response.status}`);
   }
 }
 
 export async function markFeedItemUnread(feedUrl: string, itemUrl?: string) {
-  const url = new URL(`${process.env.NEXT_PUBLIC_FEEDER_API_URL}/feed/items/un-read`);
+  const url = new URL(baseUrl());
+  url.searchParams.set("apiUrl", "/feed/items/un-read");
   url.searchParams.set("feed", feedUrl);
   if (itemUrl) {
     url.searchParams.set("feedItem", itemUrl);
   }
-  const response = await fetch(url, { method: "put" });
+  const newHeaders = new Headers();
+  newHeaders.set("content-type", "application/json");
+  const response = await fetch(url, { method: "put", headers: newHeaders });
   if (!response.ok) {
     throw new Error(`Failed to mark feed item read: ${response.status}`);
   }
+}
+
+export async function fetchFeedConfig() {
+  const url = new URL(baseUrl());
+  url.searchParams.set("apiUrl", "/feeds");
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch feed: ${response.status}`);
+  }
+  return response.json();
 }
 
 export async function fetchFeeds(feeds: Feed[], refreshInterval: number = 10) {
@@ -208,13 +227,13 @@ export async function fetchFeeds(feeds: Feed[], refreshInterval: number = 10) {
     // fetch all feeds from backend, because of CORS issues
     const responses = await Promise.allSettled(
       feedUrls.map(urlStr => {
-        const url = new URL(`${process.env.NEXT_PUBLIC_FEEDER_API_URL}/feed/items`);
+        const url = new URL(baseUrl());
         url.searchParams.set("feed", urlStr);
+        url.searchParams.set("unread", "true");
+        url.searchParams.set("limit", "1000");
+        url.searchParams.set("apiUrl", "/feed/items");
         return fetch(url, {
           method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
         });
       }),
     );
