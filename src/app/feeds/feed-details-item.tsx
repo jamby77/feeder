@@ -20,11 +20,11 @@ export const FeedDetailsItem = ({
   item: FeedItem;
   toggleRead: (item: FeedItem | undefined) => void;
 }) => {
+  const { setSelectedItem, config } = useAppContext();
   const description = getFeedItemContent(item);
   const content = DOMPurify.sanitize(description, { FORBID_TAGS: ["iframe"] });
   const title = DOMPurify.sanitize(item.title);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { setSelectedItem, config } = useAppContext();
   const { prev, next } = useMemo(() => {
     if (!config) {
       return {} as {
@@ -109,7 +109,7 @@ export const FeedDetailsItem = ({
           <FeedItemImage item={item} size="large" />
         </div>
         <div
-          className="prose prose-xl prose-stone dark:prose-invert mt-4 mb-16 w-full px-4"
+          className="prose prose-xl prose-stone dark:prose-invert mt-4 mb-16 w-full px-4 text-pretty"
           dangerouslySetInnerHTML={{ __html: content }}
         />
       </div>
