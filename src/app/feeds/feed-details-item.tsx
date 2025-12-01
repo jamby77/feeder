@@ -114,7 +114,7 @@ export const FeedDetailsItem = ({
         />
       </div>
       <button
-        className="absolute top-2 left-2 rounded-full bg-transparent p-6"
+        className="absolute top-2 right-2 rounded-full bg-transparent p-6"
         type="button"
         onClick={() => {
           setSelectedItem(undefined);
