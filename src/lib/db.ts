@@ -104,6 +104,10 @@ export async function getFeedItem(itemId: string) {
   return db.feedItems.get(itemId);
 }
 
+export async function getFeed(feedId: string) {
+  return db.feeds.get(feedId);
+}
+
 export async function setFeedItems(
   feeds: {
     url: string;

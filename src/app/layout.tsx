@@ -20,8 +20,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.className} flex h-full min-h-screen flex-col bg-background text-foreground`}>
-        <div className="relative flex h-full min-h-screen flex-col pt-topBar">
+      <body className={`${inter.className} bg-background text-foreground flex h-full min-h-screen flex-col`}>
+        <div className="pt-top-bar relative flex h-full min-h-screen flex-col">
           <AppContextProvider>
             <TopNavBar />
             {children}

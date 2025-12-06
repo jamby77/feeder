@@ -46,7 +46,7 @@ export const FormCheckboxGroup = ({
       title={label}
     >
       {label && (
-        <Label htmlFor={id} className="flex-shrink-0 flex-grow-0">
+        <Label htmlFor={id} className="shrink-0 grow-0">
           {label}
           {required ? " *" : ""}
           {labelSuffix}
